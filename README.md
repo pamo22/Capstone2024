@@ -1,10 +1,9 @@
 # Capstone project 2024  
 
-a change on the branch
+## Current considerations (technical)
+Websites don't like being scraped. Need to use headless browser or selenium or something
 
-another change
-
-this text added in b1
+## Broad description
 
 Online content
 collection platform

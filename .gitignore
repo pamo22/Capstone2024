@@ -1,0 +1,6 @@
+#ignore python venv
+venv/
+
+#ignore the examples but not the get.sh script
+examples 
+!examples/get.sh
