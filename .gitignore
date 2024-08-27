@@ -1,6 +1,7 @@
 #ignore python venv
-venv/
+python/venv/
 
 #ignore the examples but not the get.sh script
 examples 
 !examples/get.sh
+run_scraper.sh
