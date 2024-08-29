@@ -13,6 +13,10 @@ url1 = "https://www.adobe.com/au/legal/licenses-terms.html"
 url2 = ""
 url3 = ""
 
+#bytes strings
+#   expected ouput = eo
+eo1 = b""
+
 #run tests
 
 
