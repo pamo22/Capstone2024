@@ -15,15 +15,27 @@ chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x
 driver = webdriver.Chrome(options=chrome_options)
 
 #temporary test url
-temp_url = "https://www.adobe.com/au/legal/licenses-terms.html"
+temp_url1 = "https://www.adobe.com/au/legal/licenses-terms.html"
+temp_url2 = ""
+temp_url3 = "http://example.com"
 
 
 #Scraper code
 def scrape(url):
     driver.get(url)
-    print(driver.page_source.encode("utf-8"))
+    scraped_content = driver.page_source.encode("utf-8")
     # b'<!DOCTYPE html><html xmlns="http://www....
     driver.quit()
+    print(scraped_content)
+    return scraped_content
+
+#output to text file (for now using as test assert)
+def to_txt(bytes_string):
+    with open("Output.txt", "wb") as text_file:
+        text_file.write(bytes_string)
 
 
-scrape(temp_url)
+#Running Functions
+
+#scrape(temp_url3)
+to_txt(scrape(temp_url3))
