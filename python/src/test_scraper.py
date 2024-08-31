@@ -10,9 +10,28 @@ from scraper import scrape
 
 #test url variable setting
 url1 = "https://www.adobe.com/au/legal/licenses-terms.html"
-url2 = ""
-url3 = ""
+url2 = "http://example.com"
+url3 = "https://www.adobe.com/content/dam/cc/en/legal/licenses-terms/pdf/CS6.pdf" # This is a big one, 471 pages
 
+eg_badinput1 = "" #Nothing / Invalid link
+eg_badinput2 = 1234567890 # not string
+eg_badinput3 = "thisisnotalink*%^&(!*@&###!*(     .com" #ends with .com but isnt a link
+eg_badinput4 = "" #
+eg_badinput5 = "" #
+
+test_url_list = [
+    url1,
+    url2,
+    url3 ,
+    eg_badinput1,
+    eg_badinput2,
+    eg_badinput3,
+    eg_badinput4,
+    eg_badinput5
+]
+
+
+print(test_url_list)
 #bytes strings
 #   expected ouput = eo
 eo1 = b""
