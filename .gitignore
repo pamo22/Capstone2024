@@ -1,5 +1,6 @@
 #ignore python venv
 python/venv/
+python/src/__pycache__/
 
 #ignore the examples but not the get.sh script
 examples 
