@@ -8,6 +8,7 @@
 # importing the library
 from bs4 import BeautifulSoup
 
+from python.src.scraper import scrape
 
 # Conversion Function, takes a local html file
 # and converts the document into more readable text
@@ -40,11 +41,17 @@ def writefile(name, text):
 
 # Define example variable here
 
-fLicense = "Adobe General Terms of Use.html"
+url = "https://www.adobe.com/au/legal/terms.html"
+#fLicense = "Adobe General Terms of Use.html"
 nLicense = "Adobe"
 
+# Testing with scraper and defined url
+scrape(url)
+
 # Convert html file to text
-lText = html_converter(fLicense)
+lText = html_converter("out.html")
 
 # Write text to file with appropriate name
 writefile(nLicense, lText)
+
+
