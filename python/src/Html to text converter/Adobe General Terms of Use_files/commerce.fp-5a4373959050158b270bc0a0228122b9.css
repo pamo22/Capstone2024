@@ -1,0 +1,8 @@
+.price-strikethrough {
+  text-decoration: line-through;
+}
+.price-tax-inclusivity:not(.disabled)::before {
+  display: inline-block;
+  content: "\00a0 ";
+}
+
