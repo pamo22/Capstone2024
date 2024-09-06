@@ -14,6 +14,7 @@ from python.src.scraper import scrape_obj
 # Conversion Function, takes a local html file
 # and converts the document into more readable text
 # for further operations
+
 def html_converter(html_file):
     # Opens the html file in read mode
     file = open(html_file, "r", encoding="utf-8")
@@ -54,14 +55,17 @@ def writefile(name, text):
 
 # Test URL
 url = "https://www.oracle.com/downloads/licenses/no-fee-license.html"
-# fLicense = "Adobe General Terms of Use.html"
-nLicense = "Oracle"
+# License name
+name = "Oracle"
 
-# Testing with scraper and defined url, CURRENTLY NOT WORKING
-# scrape(url)
+# Creates Scraper object
+file = scrape_obj()
+
+# Retrieves website information from the test_Url
+html, content = file.save_to_file(url, name)
 
 # Convert html file to text
-lText = html_converter("out.html")
+lText = html_converter(html)
 
 # Write text to file with appropriate name
-writefile(nLicense, lText)
+writefile(name, lText)
