@@ -39,16 +39,18 @@ def menu_options():
         case '5':
             print("You pressed 5")
             url = input("Input url to be scraped: ")
+            title = input("Plesae input a name to refer to this licence by: ")
             filename = uuid.uuid4()
             scraped_text = scraperhandle.get_text(url)
-            file = scraperhandle.save_to_file(url, filename)
+            file_result = scraperhandle.save_to_file(url, str(filename))
 
             
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             # PLAINTEXT CREDENTIALS IN SOURCE CODE || TESTING ONLY
-            mongohandle = dbinterface("mongodb://mytester:databased1204@localhost:2701")
+            mongohandle = dbinterface("mongodb://mytester2:databased1204@localhost:27017")
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            mongohandle.create_license(url, file[0], file[1])
+            print("Adding database item\n" + url + ", " + file_result[0] + ", " + file_result[1] + ", " + str(filename))
+            mongohandle.create_license(url, file_result[0], file_result[1], str(filename))
 
         case '6':
             print("You pressed 6")
