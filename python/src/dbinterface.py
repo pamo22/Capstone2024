@@ -9,12 +9,14 @@ class dbinterface:
         db_client = pymongo.MongoClient(mongoaddress);
         self.db = db_client["testdb"]
 
-    def create_license(self, title: str, filetype: str, content: str, uuid: str):
+    def create_license(self, title: str, url: str, filepath: str, content: str, uuid: str):
         create_result = self.db.licenses.insert_one(
             {
                 "title": title,
                 "created_date": datetime.utcnow(),
-                "filetype": filetype,
+                "url": url,
+                "filepath": filepath,
+                "filetype": filepath.split('.')[-1],
                 "content": content,
                 "file_ref_uuid": uuid
              }

@@ -37,11 +37,13 @@ class scrape_obj:
         file_extension = url.split('.')[-1]
         if file_extension == "pdf":
             content = self._fetch_pdf(url)
-            to_txt(content, filename + ".pdf")
+            filename += ".pdf"
+            to_txt(content, filename)
             return os.path.abspath(filename), str(content)
         else:
             content = self._fetch_html(url)
-            to_txt(content, filename + ".html")
+            filename += ".html"
+            to_txt(content, filename )
             return os.path.abspath(filename), str(content)
 
     def get_text(self, url: str) -> Tuple[bytes, str]:

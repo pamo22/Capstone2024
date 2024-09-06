@@ -49,8 +49,7 @@ def menu_options():
             # PLAINTEXT CREDENTIALS IN SOURCE CODE || TESTING ONLY
             mongohandle = dbinterface("mongodb://mytester2:databased1204@localhost:27017")
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            print("Adding database item\n" + url + ", " + file_result[0] + ", " + file_result[1] + ", " + str(filename))
-            mongohandle.create_license(url, file_result[0], file_result[1], str(filename))
+            mongohandle.create_license(title, url, file_result[0], file_result[1], str(filename))
 
         case '6':
             print("You pressed 6")
