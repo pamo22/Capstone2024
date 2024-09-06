@@ -6,6 +6,7 @@ import uuid
 
 #courtesy of https://patorjk.com/software/taag/
 os.system('cls' if os.name == 'nt' else 'clear')
+exit = False
 
 
 def main():
@@ -64,8 +65,12 @@ def menu_options():
             print("You pressed 6")
             print(scraperhandle.save_to_file(input("Input url to be scraped: ")))
 
+        case 'q':
+            print("exiting...")
+            exit = True
         case _:
             print("invalid input") #should ignore invalid input but fine for now
 
 main();
-menu_options()
+while (not exit):
+    menu_options()
