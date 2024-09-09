@@ -35,16 +35,16 @@ def menu_options():
         case '3':
             print("You pressed 3")
             #temp file names
-            file1 = "src/Comparison_cancelmethod/MonteChristo.txt"
-            file2 = "src/Comparison_cancelmethod/MonteChristo_altered.txt"
+            #file1 = "src/Comparison_cancelmethod/MonteChristo.txt"
+            #file2 = "src/Comparison_cancelmethod/MonteChristo_altered.txt"
             
-            #file1 = "src/eg_1.txt"
-            #file2 = "src/eg_2.txt"
-            #comparehandle.compare_file_verbose(file1, file2)
-            #comparehandle.compare_file_verbose(file2, file1)
-
+            file1 = "src/eg_1.txt"
+            file2 = "src/eg_2.txt"
+            comparehandle.compare_file_verbose(file1, file2)
+            comparehandle.compare_file_verbose(file2, file1)
             comparehandle.compare_old_file_verbose(file1, file2)
             comparehandle.compare_old_file_verbose(file2, file1)
+
             
         case '4':
             print("You pressed 4")
@@ -71,6 +71,19 @@ def menu_options():
         case '6':
             print("You pressed 6")
             print(scraperhandle.save_to_file(input("Input url to be scraped: ")))
+        
+        case '7':
+            print("You pressed 7")
+            print(comparehandle.checksum(file1))
+            print(comparehandle.checksum(file2))
+            print("COMPARING DIFF CHECKSUMS: ")
+            print(comparehandle.checksum_compare(file1, file2))
+            print(comparehandle.checksum_compare(file2, file1))
+            print("COMPARING SAME CHECKSUMS: ")
+            print(comparehandle.checksum_compare(file1, file1))
+            print(comparehandle.checksum_compare(file2, file2))
+            
+
 
         case 'q':
             print("exiting...")

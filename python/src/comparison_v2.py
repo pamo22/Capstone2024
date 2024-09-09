@@ -64,11 +64,14 @@ class compare_obj:
         diff_list = self._compare(linesA, linesB)
         return diff_list
 
-    def checksum (file_name: str) -> str:
+    def checksum (self, file_name: str) -> str:
         with open(file_name, 'rb') as file_obj:
             file_contents = file_obj.read()
             md5_hash = hashlib.md5(file_contents).hexdigest()
             return md5_hash
+    
+    def checksum_compare (self, file_name_1: str, file_name_2: str) -> bool:
+        return (self.checksum(file_name_1) == self.checksum(file_name_2))
 
     ##EVERYTHING BEYOND THIS POINT IS DEPRECATED
 
