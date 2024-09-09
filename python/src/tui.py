@@ -25,6 +25,7 @@ def menu_options():
     print("5. Scrape url and add to database")
     print("6. Scrape url and save to file")
     scraperhandle = scrape_obj()
+    mongohandle = dbinterface(scraperhandle)
     comparehandle = compare_obj()
 
     match input():
@@ -57,16 +58,10 @@ def menu_options():
             print("You pressed 5")
             url = input("Input url to be scraped: ")
             title = input("Please input a name to refer to this licence by: ")
-            filename = uuid.uuid4()
-            scraped_text = scraperhandle.get_text(url)
-            file_result = scraperhandle.save_to_file(url, str(filename))
+            frequency = input("How often should this be checked (hours): ")
 
 
-            #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # PLAINTEXT CREDENTIALS IN SOURCE CODE || TESTING ONLY
-            mongohandle = dbinterface("mongodb://mytester2:databased1204@localhost:27017")
-            #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            mongohandle.create_license(title, url, file_result[0], file_result[1], str(filename))
+            mongohandle.add_license(title, url, frequency)
 
         case '6':
             print("You pressed 6")
