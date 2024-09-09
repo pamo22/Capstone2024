@@ -34,8 +34,12 @@ class dbinterface:
         )
         print(f"New Todo ID: {create_result.inserted_id}")
         return None
-    def _update_license(self, url):
-        new_content = self.shandle.get_text()[0] 
+    def _check_license(self, url):
+        new_content = self.shandle.get_text()[0]
+        old_content_checksum = self.db.licenses.find_one(sort=[('_id', -1)]).get('content_checksum')
+        if (hashlib.sha256(scraped_text[1].encode('utf-8')).hexdigest() != old_content_checksum):
+            break
+        #now do stuff
     
     def add_license(self, title: str, url: str, frequency: int):
         #frequency should be in hours, we store time in millis so convert it
