@@ -55,7 +55,7 @@ class scrape_obj:
 
 #output to text file (for now using as test assert)
 def to_txt(bytes_string, name):
-    with open(name, "wb") as text_file:
+    with open('data/' + name, "wb") as text_file:
         text_file.write(bytes_string)
 
 
