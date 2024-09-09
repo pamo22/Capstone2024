@@ -1,6 +1,9 @@
 Lorem ipsum odor amet, consectetuer adipiscing elit. Suspendisse nec elit vestibulum tortor duis. Sem parturient pulvinar sapien imperdiet efficitur enim molestie hac. Potenti facilisi eleifend maximus eleifend volutpat hendrerit mus. Ultrices semper inceptos placerat ut fringilla. Posuere duis duis leo amet imperdiet quisque molestie.
 
 This line is in eg1 but not eg2
+
+This line is duplicated twice in eg_1, but only once in eg_2
+This line is duplicated twice in eg_1, but only once in eg_2
 Maximus sapien facilisi tempus mi proin maecenas phasellus. Cras porta venenatis praesent mattis fermentum condimentum. Ultrices vitae egestas lobortis facilisi semper. Ornare class himenaeos libero sollicitudin mi. Cras vel sit nostra pharetra odio platea fames conubia elit. Elit fusce vehicula per cras tempus turpis ipsum mauris. Aliquam egestas dui habitasse nulla hac. Cubilia a quisque ridiculus aliquam blandit enim velit. Mattis fusce elementum aliquet accumsan congue ligula penatibus semper. Rhoncus suspendisse nec placerat habitasse aliquet blandit mus.
 
 Adipiscing phasellus tortor hendrerit bibendum nostra torquent ultricies proin. Molestie nisi mauris integer tempus felis lobortis inceptos. Non vehicula condimentum turpis, nisl sollicitudin facilisis. Diam pulvinar consequat mauris pretium scelerisque senectus semper. Malesuada luctus accumsan pellentesque cursus volutpat ligula odio. Scelerisque per non dis sociosqu in. Et potenti elit quisque tincidunt auctor; elementum eget facilisi. Nibh arcu enim feugiat vehicula, magnis proin. Natoque pretium phasellus praesent condimentum id semper dapibus. Hac condimentum ad lectus mattis; praesent venenatis.

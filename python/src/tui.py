@@ -35,10 +35,17 @@ def menu_options():
         case '3':
             print("You pressed 3")
             #temp file names
-            file1 = "src/eg_1.txt"
-            file2 = "src/eg_2.txt"
-            comparehandle.compare_file_verbose(file1, file2)
-            comparehandle.compare_file_verbose(file2, file1)
+            file1 = "src/Comparison_cancelmethod/MonteChristo.txt"
+            file2 = "src/Comparison_cancelmethod/MonteChristo_altered.txt"
+            
+            #file1 = "src/eg_1.txt"
+            #file2 = "src/eg_2.txt"
+            #comparehandle.compare_file_verbose(file1, file2)
+            #comparehandle.compare_file_verbose(file2, file1)
+
+            comparehandle.compare_old_file_verbose(file1, file2)
+            comparehandle.compare_old_file_verbose(file2, file1)
+            
         case '4':
             print("You pressed 4")
             #temp file names
