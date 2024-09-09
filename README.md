@@ -43,3 +43,8 @@ Data collection from
 unstructured/semi-structured
 sources
 
+##Notes for comparison script
+* Automatic save to file filename?
+* Overall class structure could be improved
+* 
+

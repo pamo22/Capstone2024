@@ -1,0 +1,4 @@
+using mongosh:
+use admin
+db.createUser({ user: "mytester", pwd: "databased1204", roles: [ { role: "readWrite", db: "testdb" } ]})
+
