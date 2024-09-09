@@ -1,4 +1,5 @@
 import timeit
+import hashlib
 
 class compare_obj:
     def __init__(self):
@@ -40,4 +41,12 @@ class compare_obj:
 
             stop = timeit.default_timer()
             print('Comparison time: ', stop - start)
+
+    def checksum (file_name: str) -> str:
+        with open(file_name, 'rb') as file_obj:
+            file_contents = file_obj.read()
+            md5_hash = hashlib.md5(file_contents).hexdigest()
+            return md5_hash
+                
+
 
