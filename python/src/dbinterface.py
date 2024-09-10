@@ -18,6 +18,7 @@ class dbinterface:
 
     def _save_license_info(self, title: str, url: str, ref_id):
         generated_filename = str(uuid.uuid4())
+        self.shandle.get_text(url)
         scraped_text = self.shandle.save_to_file(url, generated_filename)
         create_result = self.db.licenses.insert_one(
             {
@@ -25,8 +26,8 @@ class dbinterface:
                 "created_date": self._now_millis(),
                 "url": url,
                 "filepath": scraped_text[0],
-                "filetype": scraped_text[2],
-                "content": scraped_text[1],
+                "filetype": self.shandle.filetype,
+                "content": self.shandle.content,
                 "file_ref_uuid": generated_filename,
                 "content_checksum": hashlib.sha256(scraped_text[1].encode('utf-8')).hexdigest(),
                 "tracker_ref_id": ref_id
@@ -38,7 +39,7 @@ class dbinterface:
         new_content = self.shandle.get_text()[0]
         old_content_checksum = self.db.licenses.find_one(sort=[('_id', -1)]).get('content_checksum')
         if (hashlib.sha256(scraped_text[1].encode('utf-8')).hexdigest() != old_content_checksum):
-            break
+            return
         #now do stuff
     
     def add_license(self, title: str, url: str, frequency: int):

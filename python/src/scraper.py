@@ -9,6 +9,9 @@ from typing import Tuple
 class scrape_obj:
     def __init__(self):
         return None
+        self.content = ""
+        self.filetype = ""
+        self.ready = False
     def _fetch_pdf(self, url: str) -> Tuple[bytes, str]:
         response = urllib.request.urlopen(url)
         content = response.read()
@@ -35,27 +38,18 @@ class scrape_obj:
     # returns a tuple with the filename[0] and content[1], and filetype[2]
     def save_to_file(self, url: str, filename: str) -> Tuple[str, str, str]:
         file_extension = url.split('.')[-1]
-        if file_extension == "pdf":
-            content = self._fetch_pdf(url)
-            to_txt(content, filename)
-            return os.path.abspath(filename), str(content), "pdf"
-        else:
-            content = self._fetch_html(url)
-            to_txt(content, filename )
-            return os.path.abspath(filename), str(content), "html" 
-
-    def save_to_file_precached(self, url: str, filename: str, content: str) -> Tuple[str, str]:
-        to_txt(content, filename)
+        to_txt(self.content, filename)
+        return os.path.abspath(filename), str(self.content), self.filetype 
 
 
-    def get_text(self, url: str) -> Tuple[bytes, str]:
+    def get_text(self, url: str) -> None:
         file_extension = url.split('.')[-1]
         if file_extension == "pdf":
-            content = self._fetch_pdf(url)
-            return content, "pdf"
+            self.content = self._fetch_pdf(url)
+            self.filetype = "pdf"
         else:
-            content = self._fetch_html(url)
-            return content, "html"
+            self.content = self._fetch_html(url)
+            self.filetype = "html"
 
 #output to text file (for now using as test assert)
 def to_txt(bytes_string, name):
