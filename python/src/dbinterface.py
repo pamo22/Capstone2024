@@ -6,12 +6,14 @@ import time
 import uuid
 from scraper import scrape_obj
 import hashlib
+from comparison_v2 import compare_obj
 
 class dbinterface:
     def __init__(self, scraperhandle: scrape_obj):
         self.shandle = scraperhandle
         db_client = pymongo.MongoClient("mongodb://mytester2:databased1204@localhost:27017");
         self.db = db_client["testdb"]
+        self.c_obj = compare_obj()
 
     def _now_millis(self):
         return round(time.time() * 1000)
@@ -29,7 +31,7 @@ class dbinterface:
                 "filetype": self.shandle.filetype,
                 "content": self.shandle.content,
                 "file_ref_uuid": generated_filename,
-                "content_checksum": hashlib.sha256(scraped_text[1].encode('utf-8')).hexdigest(),
+                "content_checksum": self.c_obj.checksum_bytes(self.shandle.content),
                 "tracker_ref_id": ref_id
              }
         )
@@ -37,13 +39,10 @@ class dbinterface:
         return None
     def _check_license_changed(self, url) -> bool:
         if (self.shandle.content == ""):
+            print("gettign congteht")
             self.shandle.get_text(url)
-        new_content = self.shandle.content
         old_content_checksum = self.db.licenses.find_one(sort=[('_id', -1)]).get('content_checksum')
-        if (hashlib.sha256(new_content.encode('utf-8')).hexdigest() == old_content_checksum):
-            return False
-        return True
-        #now do stuff
+        return self.c_obj.compare_bytes_checksum(self.shandle.content, old_content_checksum)
     
     def add_license(self, title: str, url: str, frequency: int):
         #frequency should be in hours, we store time in millis so convert it

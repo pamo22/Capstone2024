@@ -79,6 +79,7 @@ def menu_options():
             print(comparehandle.checksum_compare(file1, file1))
             print(comparehandle.checksum_compare(file2, file2))
         case '8':
+            
             print(mongohandle._check_license_changed("https://example.com"))
             
 

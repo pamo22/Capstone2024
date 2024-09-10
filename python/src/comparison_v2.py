@@ -69,9 +69,18 @@ class compare_obj:
             file_contents = file_obj.read()
             md5_hash = hashlib.md5(file_contents).hexdigest()
             return md5_hash
-    
+
     def checksum_compare (self, file_name_1: str, file_name_2: str) -> bool:
         return (self.checksum(file_name_1) == self.checksum(file_name_2))
+
+    def checksum_bytes (self, text: bytes):
+        return hashlib.md5(text).hexdigest()
+
+    def compare_bytes(self, content1: bytes, content2: bytes) -> bool:
+        return self.checksum_bytes(content1) == self.checksum_bytes(content2)
+
+    def compare_bytes_checksum(self, content: bytes, checksm: str) -> bool:
+        return self.checksum_bytes(content) == checksm
 
     ##EVERYTHING BEYOND THIS POINT IS DEPRECATED
 
