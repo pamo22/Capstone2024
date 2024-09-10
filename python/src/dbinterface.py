@@ -18,6 +18,7 @@ class dbinterface:
 
     def _save_license_info(self, title: str, url: str, ref_id):
         generated_filename = str(uuid.uuid4())
+        self.shandle.get_text(url)
         scraped_text = self.shandle.save_to_file(url, generated_filename)
         create_result = self.db.licenses.insert_one(
             {
@@ -34,15 +35,19 @@ class dbinterface:
         )
         print(f"New Todo ID: {create_result.inserted_id}")
         return None
-    def _check_license(self, url):
-        new_content = self.shandle.get_text()[0]
+    def _check_license_changed(self, url):
+        if (self.shandle.content == ""):
+            self.shandle.get_text(url)
+        new_content = self.shandle.content
         old_content_checksum = self.db.licenses.find_one(sort=[('_id', -1)]).get('content_checksum')
-        if (hashlib.sha256(scraped_text[1].encode('utf-8')).hexdigest() != old_content_checksum):
-            break
+        if (hashlib.sha256(new_content.encode('utf-8')).hexdigest() == old_content_checksum):
+            return False
+        return True
         #now do stuff
     
     def add_license(self, title: str, url: str, frequency: int):
         #frequency should be in hours, we store time in millis so convert it
+
         frequency = int(frequency) * 3600000
         ref_id = ObjectId()
         self._save_license_info(title, url, ref_id)
