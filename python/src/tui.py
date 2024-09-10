@@ -24,6 +24,7 @@ def menu_options():
     print("4. Compare 2 files and save to file") # idk if pytest likes being called from here
     print("5. Scrape url and add to database")
     print("6. Scrape url and save to file")
+    print("8. Check if entry has changed")
     scraperhandle = scrape_obj()
     mongohandle = dbinterface(scraperhandle)
     comparehandle = compare_obj()
@@ -77,6 +78,8 @@ def menu_options():
             print("COMPARING SAME CHECKSUMS: ")
             print(comparehandle.checksum_compare(file1, file1))
             print(comparehandle.checksum_compare(file2, file2))
+        case '8':
+            print(mongohandle._check_license_changed("https://example.com"))
             
 
 

@@ -7,17 +7,19 @@ from typing import Tuple
 
 
 class scrape_obj:
+    
     def __init__(self):
-        return None
+        self.content = ""
         self.content = ""
         self.filetype = ""
         self.ready = False
-    def _fetch_pdf(self, url: str) -> Tuple[bytes, str]:
+
+    def _fetch_pdf(self, url: str) -> bytes:
         response = urllib.request.urlopen(url)
         content = response.read()
         return content
 
-    def _fetch_html(self, url: str) -> Tuple[bytes, str]:
+    def _fetch_html(self, url: str) -> bytes:
         chrome_options = Options()
         chrome_options.add_argument("--headless=new") # for Chrome >= 109
         chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
@@ -40,7 +42,6 @@ class scrape_obj:
         file_extension = url.split('.')[-1]
         to_txt(self.content, filename)
         return os.path.abspath(filename), str(self.content), self.filetype 
-
 
     def get_text(self, url: str) -> None:
         file_extension = url.split('.')[-1]
