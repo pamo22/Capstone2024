@@ -7,12 +7,6 @@ import uuid
 from scraper import scrape_obj
 from comparison_v2 import compare_obj
 
-class runner:
-    def __init__(self):
-        self.shandle = scrape_obj()
-        db_client = pymongo.MongoClient("mongodb://mytester2:databased1204@localhost:27017");
-        self.db = db_client["testdb"]
-        self.c_obj = compare_obj()
 
 #    def _now_millis(self):
 #        return round(time.time() * 1000)
@@ -61,4 +55,9 @@ class runner:
 #
 #    #def fetch_license(
 
-maindaemon = runner()
+shandle = scrape_obj()
+db_client = pymongo.MongoClient("mongodb://mytester2:databased1204@localhost:27017");
+db = db_client["testdb"]
+c_obj = compare_obj()
+while True:
+        

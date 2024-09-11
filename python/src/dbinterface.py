@@ -37,11 +37,12 @@ class dbinterface:
         )
         print(f"New Todo ID: {create_result.inserted_id}")
         return None
-    def _check_license_changed(self, url) -> bool:
+    def _check_license_changed(self, trackerid) -> bool:
         if (self.shandle.content == ""):
             print("gettign congteht")
+            url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
             self.shandle.get_text(url)
-        old_content_checksum = self.db.licenses.find_one(sort=[('_id', -1)]).get('content_checksum')
+        old_content_checksum = self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content_checksum')
         return self.c_obj.compare_bytes_checksum(self.shandle.content, old_content_checksum)
     
     def add_license(self, title: str, url: str, frequency: int):
@@ -59,6 +60,9 @@ class dbinterface:
                         "last_checked": self._now_millis()
                      }
                 )
+
+    def get_licenses_list(self):
+        self.db.tracker.find().get
 
     #def fetch_license(
 
