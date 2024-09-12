@@ -64,6 +64,14 @@ class compare_obj:
         diff_list = self._compare(linesA, linesB)
         return diff_list
 
+    def compare_bytes(self, text1: bytes, text2: bytes) -> [(int, str)]:
+        string1 = text1.decode("utf-8")
+        string2 = text2.decode("utf-8")
+
+        return compare_strings(string1,string2)
+
+    ### CHECKSUM FUNCTIONS ###
+
     def checksum (self, file_name: str) -> str:
         with open(file_name, 'rb') as file_obj:
             file_contents = file_obj.read()
@@ -76,13 +84,13 @@ class compare_obj:
     def checksum_bytes (self, text: bytes):
         return hashlib.md5(text).hexdigest()
 
-    def compare_bytes(self, content1: bytes, content2: bytes) -> bool:
+    def checksum_compare_bytes(self, content1: bytes, content2: bytes) -> bool:
         return self.checksum_bytes(content1) == self.checksum_bytes(content2)
 
-    def compare_bytes_checksum(self, content: bytes, checksm: str) -> bool:
+    def checksum_compare_bytes_checksum(self, content: bytes, checksm: str) -> bool:
         return self.checksum_bytes(content) == checksm
 
-    ##EVERYTHING BEYOND THIS POINT IS DEPRECATED
+    ##EVERYTHING BEYOND THIS POINT IS DEPRECATED but dont delete it
 
     def compare_file_old(self, file1: str, file2: str) -> [str] :
         print("Old Compare file being run")
