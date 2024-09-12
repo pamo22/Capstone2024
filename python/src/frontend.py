@@ -21,7 +21,7 @@ def menu_options():
     print("1. Add license to tracker")
     print("2. Check for license changes") 
     print("3. Edit license (not implemented) ")
-    print("4. View license (not implemented) ")
+    print("4. View license ")
     print("5. Delete license from tracker") 
     scraperhandle = scrape_obj()
     mongohandle = dbinterface(scraperhandle)
@@ -40,10 +40,10 @@ def menu_options():
 
         case '2':
             print("You pressed 2")
-            for i,item in enumerate(mongohandle.get_licenses_list()):
+            for i,item in enumerate(mongohandle.get_tracker_list()):
                 print (str(i) + ": " + item['title'] + " | " + item['url'])
             sel = input ("please select a license to check: ")
-            for i,item in enumerate(mongohandle.get_licenses_list()):
+            for i,item in enumerate(mongohandle.get_tracker_list()):
                 if (i == int(sel)):
                     result = mongohandle.check_license_changed(item['_id'])
                     if (result[0]):
@@ -58,17 +58,17 @@ def menu_options():
 
             
         case '4':
-            print("You pressed 4")
-            #temp file names
-            file1 = "src/eg_1.txt"
-            file2 = "src/eg_2.txt"
-            comparehandle.compare_save_to_file(file1, file2,"F1compF2_differences.txt")
-            comparehandle.compare_save_to_file(file2, file1,"F2compF1_differences.txt")
-        case '5':
             for i,item in enumerate(mongohandle.get_licenses_list()):
+                print (str(i) + ": " + item['title'] + " | " + item['url'] )
+            sel = input ("please select a license to view: ")
+            for i,item in enumerate(mongohandle.get_licenses_list()):
+                if (i == int(sel)):
+                    mongohandle.delete_tracker_item(item['_id'])
+        case '5':
+            for i,item in enumerate(mongohandle.get_tracker_list()):
                 print (str(i) + ": " + item['title'] + " | " + item['url'])
             sel = input ("please select a license to delete: ")
-            for i,item in enumerate(mongohandle.get_licenses_list()):
+            for i,item in enumerate(mongohandle.get_tracker_list()):
                 if (i == int(sel)):
                     mongohandle.delete_tracker_item(item['_id'])
 
