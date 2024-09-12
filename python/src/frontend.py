@@ -45,10 +45,17 @@ def menu_options():
             sel = input ("please select a license to check: ")
             for i,item in enumerate(mongohandle.get_licenses_list()):
                 if (i == int(sel)):
-                    if (mongohandle.check_license_changed(item['_id'])):
+                    result = mongohandle.check_license_changed(item['_id'])
+                    if (result[0]):
                         print("File unchanged")
                     else:
-                        print("File has changed")
+                        print("File has changed as follows:")
+                        for tup in comparehandle.compare_bytes(result[1], mongohandle.get_old_content(item['_id'])):
+                            print("line number " + str(tup[0]) + ": " + str(tup[1])) 
+                        choice = input("would you like to update it in the database? (y/n)")
+                        if (choice == "y" or choice == "Y"):
+                            mongohandle._save_license_info(item['title'], item['url'], item['_id'])
+
             
         case '4':
             print("You pressed 4")

@@ -6,8 +6,8 @@ class compare_obj:
         return None
 
     def _compare(self, list_string1: [str], list_string2: [str]) -> [(int, str)]:
-        list_string1 = linesA
-        list_string2 = linesB
+        linesA = list_string1
+        linesB = list_string2 
         diff_list = []
         same_ID = -1
 
@@ -58,7 +58,7 @@ class compare_obj:
             print('Comparison time: ', stop - start)
             return diff_list
     
-    def compare_strings(string1:str, string2:str) -> [(int, str)]:
+    def compare_strings(self, string1:str, string2:str) -> [(int, str)]:
         linesA = string1.split("\n")
         linesB = string2.split("\n")
         diff_list = self._compare(linesA, linesB)
@@ -68,7 +68,7 @@ class compare_obj:
         string1 = text1.decode("utf-8")
         string2 = text2.decode("utf-8")
 
-        return compare_strings(string1,string2)
+        return self.compare_strings(string1,string2)
 
     ### CHECKSUM FUNCTIONS ###
 
