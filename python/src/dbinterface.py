@@ -61,11 +61,14 @@ class dbinterface:
                      }
                 )
 
-    def get_licenses_list(self):    
+    def get_tracker_list(self):    
         projection = {'_id': 1, 'title': 1, 'url':1}
         query=None
         documents = self.db.tracker.find(query, projection)
         result = list(documents)
+        return result
+    
+    def get_licenses_list(self):    
         return result
 
     def get_old_content(self, trackerid):
