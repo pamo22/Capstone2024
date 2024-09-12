@@ -71,6 +71,9 @@ class dbinterface:
     def get_old_content(self, trackerid):
         return self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content')
 
+    def delete_tracker_item(self, itemid):
+        return self.db.tracker.delete_one({'_id': ObjectId(itemid)})
+
 
     #def fetch_license(
 
