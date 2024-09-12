@@ -58,12 +58,14 @@ def menu_options():
 
             
         case '4':
+            print("List of licenses: ")
             for i,item in enumerate(mongohandle.get_licenses_list()):
                 print (str(i) + ": " + item['title'] + " | " + item['url'] )
             sel = input ("please select a license to view: ")
             for i,item in enumerate(mongohandle.get_licenses_list()):
                 if (i == int(sel)):
-                    mongohandle.delete_tracker_item(item['_id'])
+                    print("ItemID: ", item['_id'])
+                    print(mongohandle.view_license(item['_id']))
         case '5':
             for i,item in enumerate(mongohandle.get_tracker_list()):
                 print (str(i) + ": " + item['title'] + " | " + item['url'])

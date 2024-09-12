@@ -39,7 +39,7 @@ class dbinterface:
         return None
     def check_license_changed(self, trackerid) -> tuple[bool, bytes]:
         if (self.shandle.content == ""):
-            print("gettign congteht")
+            print("getting content...")
             url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
             self.shandle.get_text(url)
         old_content_checksum = self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content_checksum')
@@ -69,6 +69,10 @@ class dbinterface:
         return result
     
     def get_licenses_list(self):    
+        projection = {'_id': 1, 'title': 1, 'url':1}
+        query=None
+        documents = self.db.licenses.find(query, projection)
+        result = list(documents)
         return result
 
     def get_old_content(self, trackerid):
@@ -77,6 +81,19 @@ class dbinterface:
     def delete_tracker_item(self, itemid):
         return self.db.tracker.delete_one({'_id': ObjectId(itemid)})
 
+    def view_license(self, licenseid):
+        selected_license = self.db.licenses.find_one({'_id': ObjectId(licenseid)})
+        for element in selected_license:
+            if (element == "content"):
+                print("/*** CONTENT ***/")
+                toShow = selected_license[element].decode('utf-8').split('\n')
+                for ele in toShow:
+                    print(ele)
+                print("/*** END CONTENT ***/")
+                continue
+            print(element, ": ", selected_license[element])
 
-    #def fetch_license(
+
+
+    #def fetch_licence(
 
