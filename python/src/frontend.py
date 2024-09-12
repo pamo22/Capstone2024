@@ -20,8 +20,8 @@ def main():
 def menu_options():
     print("1. Add license to tracker")
     print("2. Check for license changes") 
-    print("3. Edit license")
-    print("4. View license")
+    print("3. Edit license (not implemented) ")
+    print("4. View license (not implemented) ")
     print("5. Delete license from tracker") 
     scraperhandle = scrape_obj()
     mongohandle = dbinterface(scraperhandle)
@@ -65,11 +65,12 @@ def menu_options():
             comparehandle.compare_save_to_file(file1, file2,"F1compF2_differences.txt")
             comparehandle.compare_save_to_file(file2, file1,"F2compF1_differences.txt")
         case '5':
-            print("You pressed 5")
-            url = input("Input url to be scraped: ")
-            title = input("Please input a name to refer to this licence by: ")
-            frequency = input("How often should this be checked (hours): ")
-            mongohandle.add_license(title, url, frequency)
+            for i,item in enumerate(mongohandle.get_licenses_list()):
+                print (str(i) + ": " + item['title'] + " | " + item['url'])
+            sel = input ("please select a license to delete: ")
+            for i,item in enumerate(mongohandle.get_licenses_list()):
+                if (i == int(sel)):
+                    mongohandle.delete_tracker_item(item['_id'])
 
         case '6':
             print("You pressed 6")
