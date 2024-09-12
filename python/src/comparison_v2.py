@@ -6,8 +6,8 @@ class compare_obj:
         return None
 
     def _compare(self, list_string1: [str], list_string2: [str]) -> [(int, str)]:
-        list_string1 = linesA
-        list_string2 = linesB
+        linesA = list_string1
+        linesB = list_string2
         diff_list = []
         same_ID = -1
 
@@ -18,22 +18,22 @@ class compare_obj:
                         linesA[i] = same_ID
                         linesB[j] = same_ID
                         break
-    
+
         #check line for arbitrary value, dont include those lines because they had matches
         for i,line in enumerate(linesA):
             if line!=same_ID:
-                diff_list.append((i, line)) 
-            
+                diff_list.append((i, line))
+
         return diff_list
-    
-        
+
+
 
     def compare_file(self, file1: str, file2: str) -> [(int,str)]:
         with open(file1, 'r') as fileA, open(file2, 'r') as fileB:
             linesA = fileA.readlines()
             linesB = fileB.readlines()
             diff_list = self._compare(linesA, linesB)
-            
+
         return diff_list
 
 
@@ -57,8 +57,8 @@ class compare_obj:
 
             print('Comparison time: ', stop - start)
             return diff_list
-    
-    def compare_strings(string1:str, string2:str) -> [(int, str)]:
+
+    def compare_strings(self, string1:str, string2:str) -> [(int, str)]:
         linesA = string1.split("\n")
         linesB = string2.split("\n")
         diff_list = self._compare(linesA, linesB)
@@ -67,8 +67,7 @@ class compare_obj:
     def compare_bytes(self, text1: bytes, text2: bytes) -> [(int, str)]:
         string1 = text1.decode("utf-8")
         string2 = text2.decode("utf-8")
-        
-        return compare_strings(string1,string2)
+        return self.compare_strings(string1,string2)
 
     ### CHECKSUM FUNCTIONS ###
 
@@ -100,7 +99,7 @@ class compare_obj:
 
             diff_list = [line_a for line_a in linesA if line_a not in linesB]
             return diff_list
-    
+
     def compare_old_file_verbose(self, file1: str, file2: str):
             start = timeit.default_timer()
 

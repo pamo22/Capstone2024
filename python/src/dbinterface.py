@@ -37,13 +37,13 @@ class dbinterface:
         )
         print(f"New Todo ID: {create_result.inserted_id}")
         return None
-    def _check_license_changed(self, trackerid) -> bool:
+    def check_license_changed(self, trackerid) -> tuple[bool, bytes]:
         if (self.shandle.content == ""):
             print("gettign congteht")
             url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
             self.shandle.get_text(url)
         old_content_checksum = self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content_checksum')
-        return self.c_obj.compare_bytes_checksum(self.shandle.content, old_content_checksum)
+        return self.c_obj.checksum_compare_bytes_checksum(self.shandle.content, old_content_checksum), self.shandle.content
     
     def add_license(self, title: str, url: str, frequency: int):
         #frequency should be in hours, we store time in millis so convert it
@@ -61,8 +61,16 @@ class dbinterface:
                      }
                 )
 
-    def get_licenses_list(self):
-        self.db.tracker.find().get
+    def get_licenses_list(self):    
+        projection = {'_id': 1, 'title': 1, 'url':1}
+        query=None
+        documents = self.db.tracker.find(query, projection)
+        result = list(documents)
+        return result
+
+    def get_old_content(self, trackerid):
+        return self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content')
+
 
     #def fetch_license(
 
