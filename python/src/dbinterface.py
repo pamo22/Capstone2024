@@ -39,6 +39,21 @@ class dbinterface:
         return None
 
     #/**** Basic user actions ****/
+     def add_tracker(self, title: str, url: str, frequency: int):
+        #frequency should be in hours, we store time in millis so convert it
+        frequency = int(frequency) * 3600000
+        ref_id = ObjectId()
+        self._save_license_info(title, url, ref_id)
+        self.db.tracker.insert_one(
+                    {
+                        "_id": ref_id,
+                        "title": title,
+                        "url": url,
+                        "frequency": frequency,
+                        "last_checked": self._now_millis()
+                     }
+                )
+    
     def delete_tracker_item(self, itemid):
         return self.db.tracker.delete_one({'_id': ObjectId(itemid)})
 
@@ -55,6 +70,7 @@ class dbinterface:
             print(element, ": ", selected_license[element])
 
 
+    #/**** Automated functions - these exist in TUI but wont be directly called by user in PROD ****/
 
     def check_license_changed(self, trackerid):
     # Checks url from tracker, scrapes it, and compares scraped checksum to most recent license checksum
@@ -72,21 +88,6 @@ class dbinterface:
                 print("line number " + str(tup[0]) + ": " + str(tup[1]))
             self.update_license(trackerid)
     
-    def add_tracker(self, title: str, url: str, frequency: int):
-        #frequency should be in hours, we store time in millis so convert it
-        frequency = int(frequency) * 3600000
-        ref_id = ObjectId()
-        self._save_license_info(title, url, ref_id)
-        self.db.tracker.insert_one(
-                    {
-                        "_id": ref_id,
-                        "title": title,
-                        "url": url,
-                        "frequency": frequency,
-                        "last_checked": self._now_millis()
-                     }
-                )
-    
     def update_license(self, trackerid):
         #adds a new licenses, pulling all info from its tracker (used for when license change need to be logged)
         url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
@@ -95,6 +96,7 @@ class dbinterface:
         self._save_license_info(title, url, id)
         ## MAY NEED TO UPDATE FREQUENCY
 
+    #/**** FUNCTIONS FOR TUI ****/
 
     # Recieve list of trackers/licenses stored in db
     def get_tracker_list(self):    
@@ -112,7 +114,6 @@ class dbinterface:
         return result
 
     def get_old_content(self, trackerid) -> bytes :
-        # returns most recent license content, which is the html (stored in bytes?)
         return self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content')
 
     #List select functions should list all options, require input from user, and return selected document
