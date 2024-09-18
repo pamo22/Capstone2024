@@ -4,6 +4,7 @@ from datetime import datetime
 import time
 from scraper import scrape_obj
 from comparison_v2 import compare_obj
+import uuid 
 
 # Initialize database connection and objects
 db_client = pymongo.MongoClient("mongodb://mytester2:databased1204@localhost:27017")
@@ -39,7 +40,10 @@ def update_tracker():
             new_checksum = compare_handle.checksum_bytes(new_content)
             
             # Fetch old content from the database
-            old_license = licenses_collection.find_one({'tracker_ref_id': ref_id})
+            old_license = licenses_collection.find_one(
+                {'tracker_ref_id': ref_id},
+                sort=[('created_date', pymongo.DESCENDING)]
+            )
             old_checksum = old_license.get('content_checksum') if old_license else None
             
             if new_checksum != old_checksum:
@@ -59,7 +63,7 @@ def update_tracker():
                         "file_ref_uuid": generated_filename,
                         "content_checksum": new_checksum,
                         "tracker_ref_id": ref_id,
-                        "changes": compare_handle.compare_bytes(new_content, old_license)
+                        "changes": compare_handle.compare_bytes(new_content, old_license.get('content')) if old_license else None
                     }
                 )
                 
@@ -82,4 +86,4 @@ def update_tracker():
 if __name__ == "__main__":
     while True:
         update_tracker()
-        time.sleep(5)  # Check every hour
+        time.sleep(10)  # Check every 10 seconds
