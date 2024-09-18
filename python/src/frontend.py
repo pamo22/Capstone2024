@@ -38,30 +38,8 @@ def menu_options():
             except TypeError:
                 print("invalid input, please try again")
 
-        #case '2':
-        #    print("You pressed 2")
-        #    for i,item in enumerate(mongohandle.get_tracker_list()):
-        #        print (str(i) + ": " + item['title'] + " | " + item['url'])
-        #    sel = input ("please select a license to check: ")
-        #    for i,item in enumerate(mongohandle.get_tracker_list()):
-        #        if (i == int(sel)):
-        #            result = mongohandle.check_license_changed(item['_id'])
-        #            if (result[0]):
-        #                print("File unchanged")
-        #            else:
-        #                print("File has changed as follows:")
-        #                for tup in comparehandle.compare_bytes(result[1], mongohandle.get_old_content(item['_id'])):
-        #                    print("line number " + str(tup[0]) + ": " + str(tup[1])) 
-        #                choice = input("would you like to update it in the database? (y/n)")
-        #                if (choice == "y" or choice == "Y"):
-        #                    mongohandle._save_license_info(item['title'], item['url'], item['_id'])
         case '2':
-            result = mongohandle.tracker_list_select(mongohandle.check_license_changed)
-            if (result[0]):
-                print("File unchanged")
-            else:
-                #Need to rewrite dbinterface logic here
-                print("File changed - DBinterface being updated, changes NA")
+            mongohandle.tracker_list_select(mongohandle.check_license_changed)
 
         case '4':
             mongohandle.licenses_list_select(mongohandle.view_license)

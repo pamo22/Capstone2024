@@ -38,17 +38,42 @@ class dbinterface:
         print(f"New Todo ID: {create_result.inserted_id}")
         return None
 
-    def check_license_changed(self, trackerid) -> tuple[bool, bytes]:
-        if (self.shandle.content == ""):
-            print("getting content...")
-            url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
-            self.shandle.get_text(url)
-        old_content_checksum = self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content_checksum')
-        return self.c_obj.checksum_compare_bytes_checksum(self.shandle.content, old_content_checksum), self.shandle.content
-    
-    def add_license(self, title: str, url: str, frequency: int):
-        #frequency should be in hours, we store time in millis so convert it
+    #/**** Basic user actions ****/
+    def delete_tracker_item(self, itemid):
+        return self.db.tracker.delete_one({'_id': ObjectId(itemid)})
 
+    def view_license(self, licenseid):
+        selected_license = self.db.licenses.find_one({'_id': ObjectId(licenseid)})
+        for element in selected_license:
+            if (element == "content"):
+                print("/*** CONTENT ***/")
+                toShow = selected_license[element].decode('utf-8').split('\n')
+                for ele in toShow:
+                    print(ele)
+                print("/*** END CONTENT ***/")
+                continue
+            print(element, ": ", selected_license[element])
+
+
+
+    def check_license_changed(self, trackerid):
+    # Checks url from tracker, scrapes it, and compares scraped checksum to most recent license checksum
+    # Returns bool, and returns list of differences
+        if (self.shandle.content == ""):
+                print("getting content...")
+                url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
+                self.shandle.get_text(url)
+        old_content_checksum = self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content_checksum')
+        if (self.c_obj.checksum_compare_bytes_checksum(self.shandle.content, old_content_checksum)):
+            print("No changes found")
+        else:
+            print("Changes found as follows: ")
+            for tup in self.c_obj.compare_bytes(self.shandle.content, self.get_old_content(trackerid)):
+                print("line number " + str(tup[0]) + ": " + str(tup[1]))
+            self.update_license(trackerid)
+    
+    def add_tracker(self, title: str, url: str, frequency: int):
+        #frequency should be in hours, we store time in millis so convert it
         frequency = int(frequency) * 3600000
         ref_id = ObjectId()
         self._save_license_info(title, url, ref_id)
@@ -61,6 +86,16 @@ class dbinterface:
                         "last_checked": self._now_millis()
                      }
                 )
+    
+    def update_license(self, trackerid):
+        #adds a new licenses, pulling all info from its tracker (used for when license change need to be logged)
+        url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
+        title = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('title')
+        id = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('_id')
+        self._save_license_info(title, url, id)
+        ## MAY NEED TO UPDATE FREQUENCY
+
+
     # Recieve list of trackers/licenses stored in db
     def get_tracker_list(self):    
         projection = {'_id': 1, 'title': 1, 'url':1}
@@ -76,23 +111,9 @@ class dbinterface:
         result = list(documents)
         return result
 
-    def get_old_content(self, trackerid):
+    def get_old_content(self, trackerid) -> bytes :
+        # returns most recent license content, which is the html (stored in bytes?)
         return self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content')
-
-    def delete_tracker_item(self, itemid):
-        return self.db.tracker.delete_one({'_id': ObjectId(itemid)})
-
-    def view_license(self, licenseid):
-        selected_license = self.db.licenses.find_one({'_id': ObjectId(licenseid)})
-        for element in selected_license:
-            if (element == "content"):
-                print("/*** CONTENT ***/")
-                toShow = selected_license[element].decode('utf-8').split('\n')
-                for ele in toShow:
-                    print(ele)
-                print("/*** END CONTENT ***/")
-                continue
-            print(element, ": ", selected_license[element])
 
     #List select functions should list all options, require input from user, and return selected document
     def tracker_list_select(self, function_on_select):
@@ -113,7 +134,15 @@ class dbinterface:
             if (i == int(selection)):
                 function_on_select(item['_id'])
 
+    #/**** Deprecated but kept ****/
 
-
-    #def fetch_licence(
+    def check_license_changed_DEPRECATED(self, trackerid) -> tuple[bool, bytes]:
+    #Gets the url from tracker, scrapes it, and compares scraped checksum to most recent license checksum. 
+    # Returns bool (true if same content, false otherwise), and the scraped content in bytes
+        if (self.shandle.content == ""):
+            print("getting content...")
+            url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
+            self.shandle.get_text(url)
+        old_content_checksum = self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content_checksum')
+        return self.c_obj.checksum_compare_bytes_checksum(self.shandle.content, old_content_checksum), self.shandle.content
 
