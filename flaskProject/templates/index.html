@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+    <h1>Scraper Project</h1>
+    <div class="content">
+        <form action="" method="POST" enctype="multipart/form-data">
+            <div>
+                <p><label for="company">Company Name</label></p>
+                <p><input type="text" name="company" placeholder="add Company Name"></p>
+            </div>
+            <div>
+                <p><label for="title">Title</label></p>
+                <p><input type="text" name="title" placeholder="add title"></p>
+            </div>
+            <div>
+                <p><label for="url">Input url</label></p>
+                <p><input type="text" name="url" placeholder="add url"></p>
+            </div>
+            <div>
+                <p><label for="frequency">Frequency</label></p>
+                <p><input type="text" name="frequency" placeholder="add Frequency"></p>
+            </div>
+            <input type="file" name="file">
+            <div></div>
+            <button type="submit">Save It</button>
+        </form>
+        <hr>
+        <h1>All licenses</h1>
+        {% for licens in licenses %}
+            <div class="all_licenses">
+                <p> {{ licens['company'] }}</p>
+                <p> {{ licens['title'] }}</p>
+                <p> {{ licens['url'] }}</p>
+                <p> {{ licens['frequency'] }}</p>
+                {% for file in files %}
+                    {% if licens['file'] and licens['file']  == file %}
+                        <a href="{{ url_for('static', filename='files/'+licens['file']) }}"
+                           target="_blank">{{ licens['file'] }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                <form action="{{ url_for('delete_license', id=licens['_id']) }}" method="POST">
+                    <input type="submit" value="Delete License" onclick="return confirm('Are you sure to delete? ')">
+                </form>
+
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}
