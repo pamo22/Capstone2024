@@ -37,6 +37,7 @@ class dbinterface:
         )
         print(f"New Todo ID: {create_result.inserted_id}")
         return None
+
     def check_license_changed(self, trackerid) -> tuple[bool, bytes]:
         if (self.shandle.content == ""):
             print("getting content...")
@@ -60,7 +61,7 @@ class dbinterface:
                         "last_checked": self._now_millis()
                      }
                 )
-
+    # Recieve list of trackers/licenses stored in db
     def get_tracker_list(self):    
         projection = {'_id': 1, 'title': 1, 'url':1}
         query=None
@@ -92,6 +93,25 @@ class dbinterface:
                 print("/*** END CONTENT ***/")
                 continue
             print(element, ": ", selected_license[element])
+
+    #List select functions should list all options, require input from user, and return selected document
+    def tracker_list_select(self, function_on_select):
+        print("/**** Listing Trackers ****/")
+        for i,item in enumerate(self.get_tracker_list()):
+                print (str(i) + ": " + item['title'] + " | " + item['url'] )
+        selection = input ("please select a license to action: ")
+        for i,item in enumerate(self.get_tracker_list()):
+            if (i == int(selection)):
+                function_on_select(item['_id'])
+    
+    def licenses_list_select(self, function_on_select):
+        print("/**** Listing Licenses ****/")
+        for i,item in enumerate(self.get_licenses_list()):
+                print (str(i) + ": " + item['title'] + " | " + item['url'] )
+        selection = input ("please select a license to action: ")
+        for i,item in enumerate(self.get_licenses_list()):
+            if (i == int(selection)):
+                function_on_select(item['_id'])
 
 
 
