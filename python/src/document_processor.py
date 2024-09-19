@@ -1,5 +1,6 @@
 import io
 from bs4 import BeautifulSoup
+import pdfplumber
 
 class doc_processor_obj:
 
@@ -30,8 +31,10 @@ class doc_processor_obj:
         return text
     
     def pdf_to_text(self, pdf_bytes):
-    # Open the PDF file
-        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+        #save pdf file to temp
+        temp = io.BytesIO()
+        temp.write(pdf_bytes)
+        with pdfplumber.open(temp) as pdf:
             all_text = ""
             # Loop through each page of the PDF
             for page_number, page in enumerate(pdf.pages, start=1):
@@ -40,3 +43,4 @@ class doc_processor_obj:
                 if page_text:
                     all_text += f"\n--- Page {page_number} ---\n"
                     all_text += page_text
+        return all_text
