@@ -4,14 +4,16 @@ import time
 import os
 import urllib.request
 from typing import Tuple
+from document_processor import doc_processor_obj
 
 
 class scrape_obj:
     
     def __init__(self):
         self.content = ""
-        self.content = ""
+        self.bytes = ""
         self.filetype = ""
+        self.p_obj = doc_processor_obj
         self.ready = False
 
     def _fetch_pdf(self, url: str) -> bytes:
@@ -40,17 +42,25 @@ class scrape_obj:
     # returns a tuple with the filename[0] and content[1], and filetype[2]
     def save_to_file(self, url: str, filename: str) -> Tuple[str, str, str]:
         file_extension = url.split('.')[-1]
-        to_txt(self.content, filename)
+        to_txt(self.bytes, filename)
         return os.path.abspath(filename), str(self.content), self.filetype 
 
     def get_text(self, url: str) -> None:
         file_extension = url.split('.')[-1]
         if file_extension == "pdf":
-            self.content = self._fetch_pdf(url)
+            self.bytes = self._fetch_pdf(url)
             self.filetype = "pdf"
         else:
-            self.content = self._fetch_html(url)
+            self.bytes = self._fetch_html(url)
             self.filetype = "html"
+
+    def process_text(self) -> str:
+        if self.filetype == "pdf":
+            self.content = self.p_obj.pdf_to_text(self.bytes)
+            return self.content
+        if self.filetype == "html":
+            self.content = self.p_obj.html_converter(self.bytes)
+            return self.content
 
 #output to text file (for now using as test assert)
 def to_txt(bytes_string, name):

@@ -1,11 +1,13 @@
+import io
 
 class doc_processor_obj():
 
-    def html_converter(self, html_file):
+    def html_converter(self, html_bytes):
         # Opens the html file in read mode
         file = open(html_file, "r", encoding="utf-8")
+        text = html_bytes.decode(encoding="utf-8")
         # Uses BeautifulSoup to output the raw content from the html file
-        raw = BeautifulSoup(file, "html.parser")
+        raw = BeautifulSoup(text, "html.parser")
 
         # Rips out button text, which should practically never be relevant
         # Can add more tags here if necessary
@@ -27,9 +29,9 @@ class doc_processor_obj():
 
         return text
     
-    def pdf_to_text(pdf_path, text_output_path):
+    def pdf_to_text(self, pdf_bytes):
     # Open the PDF file
-    with pdfplumber.open(pdf_path) as pdf:
+    with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
         all_text = ""
         # Loop through each page of the PDF
         for page_number, page in enumerate(pdf.pages, start=1):
