@@ -20,19 +20,21 @@ class dbinterface:
 
     def _save_license_info(self, title: str, url: str, ref_id):
         generated_filename = str(uuid.uuid4())
-        self.shandle.get_text(url)
-        scraped_text = self.shandle.save_to_file(url, generated_filename)
+        self.shandle.get_bytes(url)
+        scraped_file = self.shandle.save_to_file(url, generated_filename)
+        self.shandle.process_text()
         create_result = self.db.licenses.insert_one(
             {
-                "title": title,
+                "title": title, #title of license
                 "created_date": self._now_millis(),
                 "url": url,
-                "filepath": scraped_text[0],
-                "filetype": self.shandle.filetype,
-                "content": self.shandle.content,
+                "filepath": scraped_file[0], #Full file path i.e /home/user/capstone/python/data/filename
+                "filetype": self.shandle.filetype, #HTML or PDF
+                "content": self.shandle.content, #Content, should be plain text
                 "file_ref_uuid": generated_filename,
-                "content_checksum": self.c_obj.checksum_bytes(self.shandle.content),
-                "tracker_ref_id": ref_id
+                "content_checksum": self.c_obj.checksum_bytes(self.shandle.bytes), #Checksum
+                "tracker_ref_id": ref_id, #Foreign key to corresponding tracker item
+                "tags": ['dog', 'lizard', 'lion'] #tags that the license will be searchable by
              }
         )
         print(f"New Todo ID: {create_result.inserted_id}")
@@ -47,10 +49,12 @@ class dbinterface:
         self.db.tracker.insert_one(
                     {
                         "_id": ref_id,
-                        "title": title,
+                        "title": title, #Title of license
                         "url": url,
-                        "frequency": frequency,
-                        "last_checked": self._now_millis()
+                        "frequency": frequency, #Frequency that license is checked in milliseconds
+                        "last_checked": self._now_millis(), #This is the time that the license was last checked in milliseconds
+                        "added_on": self._now_millis(), #Time that this was added to the db in milliseconds
+                        "tags": ['dog', 'lizard', 'lion'] #tags that the tracker will be searchable by
                      }
                 )
     
@@ -62,7 +66,7 @@ class dbinterface:
         for element in selected_license:
             if (element == "content"):
                 print("/*** CONTENT ***/")
-                toShow = selected_license[element].decode('utf-8').split('\n')
+                toShow = selected_license[element].split('\n')
                 for ele in toShow:
                     print(ele)
                 print("/*** END CONTENT ***/")
@@ -75,16 +79,17 @@ class dbinterface:
     def check_license_changed(self, trackerid):
     # Checks url from tracker, scrapes it, and compares scraped checksum to most recent license checksum
     # Returns bool, and returns list of differences
-        if (self.shandle.content == ""):
+        if (self.shandle.bytes == ""):
                 print("getting content...")
                 url = self.db.tracker.find_one({"_id": ObjectId(trackerid)}).get('url')
-                self.shandle.get_text(url)
+                self.shandle.get_bytes(url)
         old_content_checksum = self.db.licenses.find_one({'tracker_ref_id': ObjectId(trackerid)}, sort=[('_id', -1)]).get('content_checksum')
-        if (self.c_obj.checksum_compare_bytes_checksum(self.shandle.content, old_content_checksum)):
+        if (self.c_obj.checksum_compare_bytes_checksum(self.shandle.bytes, old_content_checksum)):
             print("No changes found")
         else:
             print("Changes found as follows: ")
-            for tup in self.c_obj.compare_bytes(self.shandle.content, self.get_old_content(trackerid)):
+            self.shandle.process_text()
+            for tup in self.c_obj.compare_strings(self.shandle.content, self.get_old_content(trackerid)):
                 print("line number " + str(tup[0]) + ": " + str(tup[1]))
             self.update_license(trackerid)
     

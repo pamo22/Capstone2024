@@ -13,7 +13,7 @@ class scrape_obj:
         self.content = ""
         self.bytes = ""
         self.filetype = ""
-        self.p_obj = doc_processor_obj
+        self.p_obj = doc_processor_obj()
         self.ready = False
 
     def _fetch_pdf(self, url: str) -> bytes:
@@ -40,10 +40,10 @@ class scrape_obj:
         self.driver.quit()
         return content
     # returns a tuple with the filename[0] and content[1], and filetype[2]
-    def save_to_file(self, url: str, filename: str) -> Tuple[str, str, str]:
+    def save_to_file(self, url: str, filename: str) -> Tuple[str, str]:
         file_extension = url.split('.')[-1]
         to_txt(self.bytes, filename)
-        return os.path.abspath(filename), str(self.content), self.filetype 
+        return os.path.abspath(filename), self.filetype 
 
     def get_bytes(self, url: str) -> None:
         file_extension = url.split('.')[-1]

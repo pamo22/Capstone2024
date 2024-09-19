@@ -30,13 +30,13 @@ def menu_options():
     match input():
         case '1':
             print("You pressed 1")
-            try:
-                url = input("Input url to be scraped: ")
-                title = input("Please input a name to refer to this licence by: ")
-                frequency = int(input("How often should this be checked (hours): "))
-                mongohandle.add_license(title, url, frequency)
-            except TypeError:
-                print("invalid input, please try again")
+            #try:
+            url = input("Input url to be scraped: ")
+            title = input("Please input a name to refer to this licence by: ")
+            frequency = int(input("How often should this be checked (hours): "))
+            mongohandle.add_tracker(title, url, frequency)
+            #except TypeError:
+             #   print("invalid input, please try again")
 
         case '2':
             mongohandle.tracker_list_select(mongohandle.check_license_changed)
