@@ -45,7 +45,7 @@ class scrape_obj:
         to_txt(self.bytes, filename)
         return os.path.abspath(filename), str(self.content), self.filetype 
 
-    def get_text(self, url: str) -> None:
+    def get_bytes(self, url: str) -> None:
         file_extension = url.split('.')[-1]
         if file_extension == "pdf":
             self.bytes = self._fetch_pdf(url)
