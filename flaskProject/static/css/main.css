@@ -1,20 +1,45 @@
-body{
+body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background: gray;
 }
-h1{
+
+h1 {
     text-align: center;
 }
-form{
+
+form {
     background-color: azure;
     padding: 20px;
     border-radius: 10px;
 }
-.all_licenses{
+
+.all_licenses {
     background-color: blanchedalmond;
     padding: 20px;
     margin: 15px 0;
     border-radius: 10px;
+}
+
+.scraper_link {
+    font-size: 40px;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
 }
