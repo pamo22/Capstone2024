@@ -39,7 +39,7 @@ class dbinterface:
         return None
 
     #/**** Basic user actions ****/
-     def add_tracker(self, title: str, url: str, frequency: int):
+    def add_tracker(self, title: str, url: str, frequency: int):
         #frequency should be in hours, we store time in millis so convert it
         frequency = int(frequency) * 3600000
         ref_id = ObjectId()
