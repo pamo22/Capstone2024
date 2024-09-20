@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Web Scraper</h1>
+ <form action="/scraper" method="POST">
+        <label for="web_url">URL to scrape:</label>
+        <input type="text" name="web_url" required>
+        <br><br>
+
+        <label for="title">Title of the file:</label>
+        <input type="text" name="title" required>
+        <br><br>
+
+        <label for="frequency">Frequency (in milliseconds):</label>
+        <input type="number" name="frequency" required>
+        <br><br>
+
+        <label for="tags">Tags (comma-separated):</label>
+        <input type="text"  name="tags" required>
+        <br><br>
+
+        <input type="submit" value="Scrape">
+    </form>
+<a href="/">Back to Home</a>
+
+</body>
+</html>
