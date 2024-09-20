@@ -25,8 +25,8 @@ def update_tracker():
     items = tracker_collection.find()
 
     for item in items:
-        last_checked = item.get('last_checked', 0)
-        frequency = item.get('frequency', 0)
+        last_checked = int(item.get('last_checked', 0))
+        frequency = int(item.get('frequency', 0))
         url = item.get('url', '')
         ref_id = item.get('_id')
 
@@ -35,9 +35,9 @@ def update_tracker():
             print(f"Checking item: {item['title']}")
 
             # Fetch current content
-            scrape_handle.get_text(url)
-            new_content = scrape_handle.content
-            new_checksum = compare_handle.checksum_bytes(new_content)
+            scrape_handle.get_bytes(url)
+            new_bytes = scrape_handle.bytes
+            new_checksum = compare_handle.checksum_bytes(new_bytes)
             
             # Fetch old content from the database
             old_license = licenses_collection.find_one(
@@ -50,6 +50,8 @@ def update_tracker():
                 print(f"Content has changed for {item['title']}. Updating database...")
                 # Save new license info to the database
                 generated_filename = str(uuid.uuid4())
+                scrape_handle.process_text()
+                new_content = scrape_handle.content
                 filepath = scrape_handle.save_to_file(url, generated_filename)
                 
                 licenses_collection.insert_one(
