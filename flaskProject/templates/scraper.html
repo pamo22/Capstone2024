@@ -1,31 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Web Scraper</h1>
- <form action="/scraper" method="POST">
-        <label for="web_url">URL to scrape:</label>
-        <input type="text" name="web_url" required>
-        <br><br>
+{% extends 'base.html' %}
 
-        <label for="title">Title of the file:</label>
-        <input type="text" name="title" required>
-        <br><br>
+{% block head %}{% endblock %}
 
-        <label for="frequency">Frequency (in milliseconds):</label>
-        <input type="number" name="frequency" required>
-        <br><br>
+{% block body %}
+    <div class="container">
+        <h1>Web Scraper</h1>
 
-        <label for="tags">Tags (comma-separated):</label>
-        <input type="text"  name="tags" required>
-        <br><br>
+        <form action="/scraper" method="POST">
+            <div class="mb-3">
+                <label for="web_url" class="form-label">URL to scrape:</label>
+                <input type="text" class="form-control" name="web_url" id="web_url" placeholder="Input the URL"
+                       required>
+            </div>
+            <div class="mb-3">
+                <label for="title" class="form-label">Title of the file:</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="Input the Title" required>
+            </div>
+            <div class="mb-3">
+                <label for="frequency" class="form-label">Frequency (in milliseconds):</label>
+                <input type="number" class="form-control" name="frequency" id="frequency" placeholder="Input the Title"
+                       required>
+            </div>
+            <div class="mb-3">
+                <label for="tags" class="form-label">Tags (comma-separated):</label>
+                <input type="text" class="form-control" name="tags" id="tags" placeholder="Input the Title" required>
+            </div>
+            <input type="submit" class="btn btn-primary mb-5 col-12" value="Scrape">
+        </form>
 
-        <input type="submit" value="Scrape">
-    </form>
-<a href="/">Back to Home</a>
+        <h1 class="mt-5">All Scrapers</h1>
+        <table class="table table-hover table-striped table-bordered">
+            <thead class="table-secondary">
+            <tr>
+                <th class="col">Title</th>
+                <th class="col">URL</th>
+                <th class="col">Frequency</th>
+                <th class="col">Last Checked</th>
+                <th class="col">Added_on</th>
+                <th class="col">Tags</th>
+                <th class="col">Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for scraper in scrapers %}
+                <tr>
+                    <td>{{ scraper.title }}</td>
+                    <td><a href="{{ scraper.url }}">{{ scraper.url }}</a></td>
+                    <td>{{ scraper.frequency }}</td>
+                    <td>{{ scraper.last_checked }}</td>
+                    <td>{{ scraper.added_on }}</td>
+                    <td>
+                        {% for tag in scraper.tags %}
+                            {{ tag }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <form action="{{ url_for('delete_scraper', id=scraper['_id']) }}" method="POST">
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Are you sure to delete? ')">Delete Scraper
+                            </button>
+                        </form>
+                    </td>
+                </tr>
 
-</body>
-</html>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+        <div class="d-grid col-6 mt-5 mb-5">
+            <a href="/" class="text-dark btn btn-info btn-lg">Back to Home</a>
+        </div>
+    </div>
+
+{% endblock %}

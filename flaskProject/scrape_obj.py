@@ -30,7 +30,7 @@ class ScrapeObj:
         self.driver.quit()
         return content
 
-    def save_to_db(self, url: str, title: str, frequency: int, tags: list) -> dict:
+    def create_scraper(self, url: str, title: str, frequency: int, tags: list) -> dict:
         # Extract the filename from the URL
         filenames = self.extract_filename_from_url(url)
 
@@ -44,7 +44,7 @@ class ScrapeObj:
         tracker_ref_id = self.create_license(title, url, file_path, content_checksum, tags)
 
         scraped_data = {
-            "_id": tracker_ref_id,
+            "l_id": tracker_ref_id,
             "title": title,
             "url": url,
             "frequency": frequency,  # Frequency the license is checked in milliseconds
@@ -64,7 +64,6 @@ class ScrapeObj:
         if detected_encoding is None:
             detected_encoding = 'utf-8'  # Fallback to utf-8, or use 'ISO-8859-1' if needed
 
-        # Now decode the content
         self.content = self.content.decode(detected_encoding, errors='replace')
 
         license_data = {
@@ -76,12 +75,12 @@ class ScrapeObj:
             "filetype": self.filetype,  # HTML or PDF
             'content': self.content,
             "content_checksum": checksum,  # Store checksum for validation
-            "tags": tags  # Tags for searching
+            "tags": tags
         }
 
         # Insert into the 'licenses' collection and return the inserted ObjectId
         result = self.db.licenses.insert_one(license_data)
-        return result.inserted_id  # This will be the MongoDB ObjectId
+        return result.inserted_id
 
     def extract_filename_from_url(self, url: str) -> str:
         parsed_url = urlparse(url)
@@ -97,7 +96,6 @@ class ScrapeObj:
         return filename
 
     def download_file(self, url: str, filename: str, directory: str = "static/scraped_files"):
-        # Ensure the directory exists
         if not os.path.exists(directory):
             os.makedirs(directory)
 
@@ -111,7 +109,6 @@ class ScrapeObj:
             print(f"File downloaded and saved at: {file_path}")
         except Exception as e:
             print(f"Failed to download file: {e}")
-
 
     def now_millis(self) -> int:
         """

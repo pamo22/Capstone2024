@@ -12,6 +12,7 @@ app.config['ALLOWED_EXTENSIONS'] = ['.pdf', '.html']
 client = MongoClient('localhost', 27017)
 db = client.test_db
 licenses = db.licenses
+scrapers = db.scraper
 
 # Initialize ScrapeObj with the MongoDB collection
 scraper = ScrapeObj(db)  # Pass the database connection to ScrapeObj
@@ -55,11 +56,18 @@ def scraper_page():
         scraper.get_text(url)
 
         # Call ScrapeObj to save data and download the file
-        scraper.save_to_db(url, title, frequency, tags)
+        scraper.create_scraper(url, title, frequency, tags)
 
         return render_template('scraper.html')
 
-    return render_template('scraper.html')
+    all_scrapers = scrapers.find()
+    return render_template('scraper.html', scrapers=all_scrapers)
+
+
+@app.post("/<id>/deletee/")
+def delete_scraper(id):
+    scrapers.delete_one({"_id": ObjectId(id)})
+    return redirect(url_for('scraper_page'))
 
 
 if __name__ == '__main__':
