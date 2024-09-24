@@ -1,4 +1,6 @@
 from selenium import webdriver
+import os
+import errno
 from selenium.webdriver.chrome.options import Options
 import time
 import os
@@ -64,7 +66,17 @@ class scrape_obj:
 
 #output to text file (for now using as test assert)
 def to_txt(bytes_string, name):
+    make_sure_path_exists('data')
     with open('data/' + name, "wb") as text_file:
         text_file.write(bytes_string)
+
+
+
+def make_sure_path_exists(path):
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
 
 
