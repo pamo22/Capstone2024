@@ -4,9 +4,9 @@
 
 {% block body %}
     <div class="container">
-        <h1>Web Scraper</h1>
+        <h1>Add Tracker</h1>
 
-        <form action="/scraper" method="POST">
+        <form action="/tracker" method="POST">
             <div class="mb-3">
                 <label for="web_url" class="form-label">URL to scrape:</label>
                 <input type="text" class="form-control" name="web_url" id="web_url" placeholder="Input the URL"
@@ -25,10 +25,10 @@
                 <label for="tags" class="form-label">Tags (comma-separated):</label>
                 <input type="text" class="form-control" name="tags" id="tags" placeholder="Input the Title" required>
             </div>
-            <input type="submit" class="btn btn-primary mb-5 col-12" value="Scrape">
+            <input type="submit" class="btn btn-primary mb-5 col-12" value="Add Tracker">
         </form>
 
-        <h1 class="mt-5">All Scrapers</h1>
+        <h1 class="mt-5">All Trackers</h1>
         <table class="table table-hover table-striped table-bordered">
             <thead class="table-secondary">
             <tr>
@@ -42,22 +42,22 @@
             </tr>
             </thead>
             <tbody>
-            {% for scraper in scrapers %}
+            {% for tracker in trackers %}
                 <tr>
-                    <td>{{ scraper.title }}</td>
-                    <td><a href="{{ scraper.url }}">{{ scraper.url }}</a></td>
-                    <td>{{ scraper.frequency }}</td>
-                    <td>{{ scraper.last_checked }}</td>
-                    <td>{{ scraper.added_on }}</td>
+                    <td>{{ tracker.title }}</td>
+                    <td><a href="{{ tracker.url }}">{{ tracker.url }}</a></td>
+                    <td>{{ tracker.frequency }}</td>
+                    <td>{{ tracker.last_checked }}</td>
+                    <td>{{ tracker.added_on }}</td>
                     <td>
-                        {% for tag in scraper.tags %}
+                        {% for tag in tracker.tags %}
                             {{ tag }}{% if not loop.last %}, {% endif %}
                         {% endfor %}
                     </td>
                     <td>
-                        <form action="{{ url_for('delete_scraper', id=scraper['_id']) }}" method="POST">
+                        <form action="{{ url_for('delete_tracker', id=tracker['_id']) }}" method="POST">
                             <button type="submit" class="btn btn-danger"
-                                    onclick="return confirm('Are you sure to delete? ')">Delete Scraper
+                                    onclick="return confirm('Are you sure to delete? ')">Delete Tracker
                             </button>
                         </form>
                     </td>
