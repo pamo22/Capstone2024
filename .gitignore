@@ -2,6 +2,7 @@
 python/venv/
 python/src/__pycache__/
 python/data/
+python/src/data/
 
 #ignore the examples but not the get.sh script
 examples 
