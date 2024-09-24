@@ -68,6 +68,11 @@ class compare_obj:
         string1 = text1.decode("utf-8")
         string2 = text2.decode("utf-8")
         return self.compare_strings(string1,string2)
+    
+    def compare_strbytes(self, text1: bytes, text2: str) -> [(int, str)]:
+        string1 = text1.decode("utf-8")
+        string2 = text2
+        return self.compare_strings(string1,string2)
 
     ### CHECKSUM FUNCTIONS ###
 
