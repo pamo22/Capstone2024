@@ -38,6 +38,7 @@
                 <th class="col">Last Checked</th>
                 <th class="col">Added_on</th>
                 <th class="col">Tags</th>
+                <th class="col">Licenses</th>
                 <th class="col">Delete</th>
             </tr>
             </thead>
@@ -54,6 +55,7 @@
                             {{ tag }}{% if not loop.last %}, {% endif %}
                         {% endfor %}
                     </td>
+                    <td><a href="/{{tracker._id}}">View licenses</a></td>
                     <td>
                         <form action="{{ url_for('delete_tracker', id=tracker['_id']) }}" method="POST">
                             <button type="submit" class="btn btn-danger"

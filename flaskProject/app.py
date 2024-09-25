@@ -46,7 +46,6 @@ def add_tracker():
              'tags': tags})
 
         return render_template('tracker.html')
-
     all_trackers = trackers.find()
     return render_template('tracker.html', trackers=all_trackers)
 
@@ -55,6 +54,14 @@ def add_tracker():
 def delete_tracker(id):
     trackers.delete_one({"_id": ObjectId(id)})
     return redirect(url_for('add_tracker'))
+
+
+@app.route('/<tracker_id>', methods=['GET'])
+def linked_licenses(tracker_id):
+    all_licenses = licenses.find({"tracker_ref_id": ObjectId(tracker_id)})
+    licenses_list = list(all_licenses)
+    tracker_info = trackers.find_one({"_id": ObjectId(tracker_id)})
+    return render_template('tracker_licenses.html', tracker_info=tracker_info, licenses_list=licenses_list)
 
 
 if __name__ == '__main__':
