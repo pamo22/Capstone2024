@@ -82,7 +82,7 @@ def update_tracker():
                     {'$set': {'last_checked': now_millis}}
                 )
     
-    print("Tracker update complete.")
+    print("Tracker update complete: ",datetime.fromtimestamp(_now_millis()/1000.0))
 
 # To run the update function periodically, you might use a loop or a scheduler
 if __name__ == "__main__":
