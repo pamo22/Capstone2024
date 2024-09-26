@@ -65,7 +65,7 @@ def update_tracker():
                         "file_ref_uuid": generated_filename,
                         "content_checksum": new_checksum,
                         "tracker_ref_id": ref_id,
-                        "changes": compare_handle.compare_strbytes(new_bytes, old_license.get('content')) if old_license else None
+                        "changes": compare_handle.compare_strings(new_bytes.decode(), old_license.get('content').decode()) if old_license else None
                     }
                 )
                 
