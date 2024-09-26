@@ -49,6 +49,13 @@
         <div class="d-grid col-6 mt-5 mb-5">
             <a href="/" class="text-dark btn btn-info btn-lg">Back to Home</a>
         </div>
+        <div class="d-grid col-6 mt-1 mb-5">
+            <form action="{{ url_for('export_licenses')}}" method="POST">
+                <button type="submit" class="btn btn-danger">
+                    Export to CSV
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

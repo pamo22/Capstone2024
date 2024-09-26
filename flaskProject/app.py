@@ -1,9 +1,10 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, send_file
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
 import time
 from scrape_obj import ScrapeObj
+import csv
 
 app = Flask(__name__)
 app.config['FILE_DIRECTORY'] = "static/files/"
@@ -30,6 +31,38 @@ def view_licenses():
 def delete_license(id):
     licenses.delete_one({"_id": ObjectId(id)})
     return redirect(url_for('view_licenses'))
+
+@app.post("/export")
+def export_licenses():
+    fields = [
+    "_id",
+    "title",
+    "created_date",
+    "url",
+    "filepath",
+    "filetype",
+    "content",
+    "file_ref_uuid",
+    "content_checksum",
+    "tracker_ref_id",
+    "changes"
+]
+
+    with open("export.csv", mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=fields)
+
+        # Write the header
+        writer.writeheader()
+
+        # Write the data rows
+        for license in licenses.find():
+            writer.writerow(license)
+
+        #writer.writerows(data)
+        
+
+    #return redirect(url_for('view_licenses'))
+    return send_file("export.csv", as_attachment=True)
 
 
 @app.route('/tracker', methods=['GET', 'POST'])
