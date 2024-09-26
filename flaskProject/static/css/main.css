@@ -1,20 +1,17 @@
-body{
+body, html {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background: gray;
+    overflow-x: hidden;
 }
-h1{
+
+h1 {
     text-align: center;
 }
-form{
-    background-color: azure;
-    padding: 20px;
-    border-radius: 10px;
+td {
+    word-wrap: break-word;
+    max-width: 550px;
 }
-.all_licenses{
-    background-color: blanchedalmond;
-    padding: 20px;
-    margin: 15px 0;
-    border-radius: 10px;
+button {
+    max-width: 100%;
 }

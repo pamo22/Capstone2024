@@ -2,45 +2,67 @@ from flask import Flask, render_template, url_for, request, redirect
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
-import os
+import time
+from scrape_obj import ScrapeObj
 
 app = Flask(__name__)
 app.config['FILE_DIRECTORY'] = "static/files/"
 app.config['ALLOWED_EXTENSIONS'] = ['.pdf', '.html']
 
-client = MongoClient('localhost', 27017)
+db_client = MongoClient("mongodb://mytester2:databased1204@localhost:27017")
+db = db_client["testdb"]
+licenses = db.licenses
+trackers = db.tracker
 
 
 @app.route('/', methods=['GET', 'POST'])
-def add_license():
-    if request.method == 'POST':
-        company = request.form['company']
-        title = request.form['title']
-        url = request.form['url']
-        frequency = request.form['frequency']
-        file = request.files['file']
-        extension = os.path.splitext(file.filename)[1]
-        if file:
-            if extension not in app.config['ALLOWED_EXTENSIONS']:
-                return 'Please upload PDF or HTML file'
-            file.save(os.path.join(app.config['FILE_DIRECTORY'], secure_filename(file.filename)))
-        licenses.insert_one(
-            {'company': company, 'title': title, 'url': url, 'frequency': frequency,
-             'file': file.filename if file else "NA"})
-        redirect(url_for('add_license'))
+def home_page():
+    return render_template('index.html')
+
+
+@app.route('/licenses', methods=['GET', 'POST'])
+def view_licenses():
     all_licenses = licenses.find()
-    files = os.listdir(app.config['FILE_DIRECTORY'])
-    return render_template('index.html', licenses=all_licenses, files=files)
+    return render_template('licenses.html', licenses=all_licenses)
 
 
 @app.post("/<id>/delete/")
 def delete_license(id):
     licenses.delete_one({"_id": ObjectId(id)})
-    return redirect(url_for('add_license'))
+    return redirect(url_for('view_licenses'))
 
 
-db = client.test_db
-licenses = db.licenses
+@app.route('/tracker', methods=['GET', 'POST'])
+def add_tracker():
+    if request.method == 'POST':
+        url = request.form['web_url']
+        title = request.form['title']
+        frequency = int(request.form['frequency'])
+        tags = request.form['tags'].split(',')  # Tags as comma-separated values
+        added_on = int(time.time() * 1000)
+        last_checked = int(time.time() * 1000)
+        trackers.insert_one(
+            {'title': title, 'url': url, 'frequency': frequency, 'last_checked': last_checked, 'added_on': added_on,
+             'tags': tags})
+
+        return render_template('tracker.html')
+    all_trackers = trackers.find()
+    return render_template('tracker.html', trackers=all_trackers)
+
+
+@app.post("/<id>/deletee/")
+def delete_tracker(id):
+    trackers.delete_one({"_id": ObjectId(id)})
+    return redirect(url_for('add_tracker'))
+
+
+@app.route('/<tracker_id>', methods=['GET'])
+def linked_licenses(tracker_id):
+    all_licenses = licenses.find({"tracker_ref_id": ObjectId(tracker_id)})
+    licenses_list = list(all_licenses)
+    tracker_info = trackers.find_one({"_id": ObjectId(tracker_id)})
+    return render_template('tracker_licenses.html', tracker_info=tracker_info, licenses_list=licenses_list)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,11 +1,14 @@
+import io
+from bs4 import BeautifulSoup
+import pdfplumber
 
-class doc_processor_obj():
+class doc_processor_obj:
 
-    def html_converter(self, html_file):
+    def html_converter(self, html_bytes):
         # Opens the html file in read mode
-        file = open(html_file, "r", encoding="utf-8")
+        text = html_bytes.decode(encoding="utf-8")
         # Uses BeautifulSoup to output the raw content from the html file
-        raw = BeautifulSoup(file, "html.parser")
+        raw = BeautifulSoup(text, "html.parser")
 
         # Rips out button text, which should practically never be relevant
         # Can add more tags here if necessary
@@ -27,19 +30,17 @@ class doc_processor_obj():
 
         return text
     
-    def pdf_to_text(pdf_path, text_output_path):
-    # Open the PDF file
-    with pdfplumber.open(pdf_path) as pdf:
-        all_text = ""
-        # Loop through each page of the PDF
-        for page_number, page in enumerate(pdf.pages, start=1):
-            # Extract text from the current page
-            page_text = page.extract_text()
-            if page_text:
-                all_text += f"\n--- Page {page_number} ---\n"
-                all_text += page_text
-
-    # Write the extracted text to a text file
-    with open(text_output_path, 'w', encoding='utf-8') as text_file:
-        text_file.write(all_text)
-        print(f"Text extracted and saved to {text_output_path}")
+    def pdf_to_text(self, pdf_bytes):
+        #save pdf file to temp
+        temp = io.BytesIO()
+        temp.write(pdf_bytes)
+        with pdfplumber.open(temp) as pdf:
+            all_text = ""
+            # Loop through each page of the PDF
+            for page_number, page in enumerate(pdf.pages, start=1):
+                # Extract text from the current page
+                page_text = page.extract_text()
+                if page_text:
+                    all_text += f"\n--- Page {page_number} ---\n"
+                    all_text += page_text
+        return all_text

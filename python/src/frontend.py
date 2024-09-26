@@ -19,10 +19,10 @@ def main():
 
 def menu_options():
     print("1. Add license to tracker")
-    print("2. Check for license changes") 
+    print("2. Check for license changes")
     print("3. Edit license (not implemented) ")
     print("4. View license ")
-    print("5. Delete license from tracker") 
+    print("5. Delete license from tracker")
     scraperhandle = scrape_obj()
     mongohandle = dbinterface(scraperhandle)
     comparehandle = compare_obj()
@@ -30,13 +30,13 @@ def menu_options():
     match input():
         case '1':
             print("You pressed 1")
-            try:
-                url = input("Input url to be scraped: ")
-                title = input("Please input a name to refer to this licence by: ")
-                frequency = int(input("How often should this be checked (hours): "))
-                mongohandle.add_tracker(title, url, frequency)
-            except TypeError:
-                print("invalid input, please try again")
+            #try:
+            url = input("Input url to be scraped: ")
+            title = input("Please input a name to refer to this licence by: ")
+            frequency = int(input("How often should this be checked (hours): "))
+            mongohandle.add_tracker(title, url, frequency)
+            #except TypeError:
+             #   print("invalid input, please try again")
 
         case '2':
             mongohandle.tracker_list_select(mongohandle.check_license_changed)
@@ -51,7 +51,7 @@ def menu_options():
         case '6':
             print("You pressed 6")
             print(scraperhandle.save_to_file(input("Input url to be scraped: ")))
-        
+
         case '7':
             print("You pressed 7")
             print(comparehandle.checksum(file1))
@@ -63,9 +63,9 @@ def menu_options():
             print(comparehandle.checksum_compare(file1, file1))
             print(comparehandle.checksum_compare(file2, file2))
         case '8':
-            
+
             print(mongohandle._check_license_changed("https://example.com"))
-            
+
 
 
         case 'q':

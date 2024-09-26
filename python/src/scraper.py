@@ -1,17 +1,21 @@
 from selenium import webdriver
+import os
+import errno
 from selenium.webdriver.chrome.options import Options
 import time
 import os
 import urllib.request
 from typing import Tuple
+from document_processor import doc_processor_obj
 
 
 class scrape_obj:
     
     def __init__(self):
         self.content = ""
-        self.content = ""
+        self.bytes = ""
         self.filetype = ""
+        self.p_obj = doc_processor_obj()
         self.ready = False
 
     def _fetch_pdf(self, url: str) -> bytes:
@@ -38,23 +42,41 @@ class scrape_obj:
         self.driver.quit()
         return content
     # returns a tuple with the filename[0] and content[1], and filetype[2]
-    def save_to_file(self, url: str, filename: str) -> Tuple[str, str, str]:
+    def save_to_file(self, url: str, filename: str) -> Tuple[str, str]:
         file_extension = url.split('.')[-1]
-        to_txt(self.content, filename)
-        return os.path.abspath(filename), str(self.content), self.filetype 
+        to_txt(self.bytes, filename)
+        return os.path.abspath(filename), self.filetype 
 
-    def get_text(self, url: str) -> None:
+    def get_bytes(self, url: str) -> None:
         file_extension = url.split('.')[-1]
         if file_extension == "pdf":
-            self.content = self._fetch_pdf(url)
+            self.bytes = self._fetch_pdf(url)
             self.filetype = "pdf"
         else:
-            self.content = self._fetch_html(url)
+            self.bytes = self._fetch_html(url)
             self.filetype = "html"
+
+    def process_text(self) -> str:
+        if self.filetype == "pdf":
+            self.content = self.p_obj.pdf_to_text(self.bytes)
+            return self.content
+        if self.filetype == "html":
+            self.content = self.p_obj.html_converter(self.bytes)
+            return self.content
 
 #output to text file (for now using as test assert)
 def to_txt(bytes_string, name):
+    make_sure_path_exists('data')
     with open('data/' + name, "wb") as text_file:
         text_file.write(bytes_string)
+
+
+
+def make_sure_path_exists(path):
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
 
 
