@@ -34,7 +34,7 @@ def menu_options():
                 url = input("Input url to be scraped: ")
                 title = input("Please input a name to refer to this licence by: ")
                 frequency = int(input("How often should this be checked (hours): "))
-                mongohandle.add_license(title, url, frequency)
+                mongohandle.add_tracker(title, url, frequency)
             except TypeError:
                 print("invalid input, please try again")
 
