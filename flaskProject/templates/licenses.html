@@ -5,7 +5,15 @@
 {% block body %}
 <div class="container-fluid">
     <div class="table-responsive">
-        <h1 class="mt-5">All licenses</h1>
+
+        <form action="/licenses" method="POST">
+            <input type="text" name="q" placeholder="Enter title" value="{{ query or '' }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <h1 class="mt-5">{% if query %} Results for "{{ query }}" {% else %}All licenses{% endif %}</h1>
+
+
         <table class="table table-hover table-striped table-bordered">
             <thead class="table-secondary">
             <tr>
@@ -45,6 +53,7 @@
             {% endfor %}
             </tbody>
         </table>
+
 
         <div class="d-grid col-6 mt-5 mb-5">
             <a href="/" class="text-dark btn btn-info btn-lg">Back to Home</a>

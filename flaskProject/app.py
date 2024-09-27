@@ -23,8 +23,22 @@ def home_page():
 
 @app.route('/licenses', methods=['GET', 'POST'])
 def view_licenses():
-    all_licenses = licenses.find()
-    return render_template('licenses.html', licenses=all_licenses)
+    query = None
+    all_licenses = []
+    if request.method == 'POST':
+        query = request.args.get('q', '')
+        print(f"Search Query: {query}")  # Debug print
+
+        if query:
+            search_query = {'title': {'$regex': query, '$options': 'i'}}
+            all_licenses = list(licenses.find(search_query))
+        else:
+            all_licenses = list(licenses.find())
+    else:
+        all_licenses = list(licenses.find())
+    all_licenses = [dict(item, _id=str(item['_id'])) for item in all_licenses]
+
+    return render_template('licenses.html', licenses=all_licenses, query=query)
 
 
 @app.post("/<id>/delete/")
@@ -32,21 +46,22 @@ def delete_license(id):
     licenses.delete_one({"_id": ObjectId(id)})
     return redirect(url_for('view_licenses'))
 
+
 @app.post("/export")
 def export_licenses():
     fields = [
-    "_id",
-    "title",
-    "created_date",
-    "url",
-    "filepath",
-    "filetype",
-    "content",
-    "file_ref_uuid",
-    "content_checksum",
-    "tracker_ref_id",
-    "changes"
-]
+        "_id",
+        "title",
+        "created_date",
+        "url",
+        "filepath",
+        "filetype",
+        "content",
+        "file_ref_uuid",
+        "content_checksum",
+        "tracker_ref_id",
+        "changes"
+    ]
 
     with open("export.csv", mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=fields)
@@ -58,10 +73,9 @@ def export_licenses():
         for license in licenses.find():
             writer.writerow(license)
 
-        #writer.writerows(data)
-        
+        # writer.writerows(data)
 
-    #return redirect(url_for('view_licenses'))
+    # return redirect(url_for('view_licenses'))
     return send_file("export.csv", as_attachment=True)
 
 
