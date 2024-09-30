@@ -26,8 +26,8 @@ def view_licenses():
     query = None
     all_licenses = []
     if request.method == 'POST':
-        query = request.args.get('q', '')
-        print(f"Search Query: {query}")  # Debug print
+        query = request.args.get('search', '')
+        print(f"Search Query: {query}..")
 
         if query:
             search_query = {'title': {'$regex': query, '$options': 'i'}}

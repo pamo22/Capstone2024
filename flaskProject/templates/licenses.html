@@ -7,7 +7,7 @@
     <div class="table-responsive">
 
         <form action="/licenses" method="POST">
-            <input type="text" name="q" placeholder="Enter title" value="{{ query or '' }}">
+            <input type="text" name="search" placeholder="Enter title" value="{{request.args.get('search', '') }}">
             <button type="submit">Search</button>
         </form>
 
