@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mt-5 mb-5">Object View</h1>
+    <div class="d-flex justify-content-between mt-4">
+        <div>
+            <button class="btn btn-lg btn-outline-secondary me-2">Check</button>
+            <button class="btn btn-lg btn-outline-secondary me-2">View</button>
+            <button class="btn btn-lg btn-outline-secondary">Edit</button>
+        </div>
+        <button class="btn btn-lg btn-outline-danger">Delete</button>
+    </div>
+    <div class="mt-4 p-2 bg-light">
+        <h2>Name of the license: {{license_info.title| upper}}</h2>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header d-flex justify-content-between">
+            <span>License Text/Comparison</span>
+            <span>Created Date: <strong>{{license_info.created_date}}</strong></span>
+        </div>
+        <div class="card-body" style="height: 300px; overflow-y: scroll;">
+            <p>Changes : {{ license_info.changes }}</p>
+            <p><em>Line 1</em> Additions are in <em>italics</em></p>
+            <p><strong>Line 3</strong> Removals are in <strong>bold</strong></p>
+        </div>
+    </div>
+    <div class="d-grid col-6 mt-5 mb-5">
+        <a href="/licenses" class="text-dark btn btn-info btn-lg">Back to Home</a>
+    </div>
+
+</div>
+{% endblock %}
+

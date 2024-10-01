@@ -1,8 +1,8 @@
-from flask import Flask, render_template, url_for, request, redirect, send_file
+from flask import Flask, render_template, url_for, request, redirect, send_file, send_from_directory, Response
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
-import time
+import time, os, bson, io
 from scrape_obj import ScrapeObj
 import csv
 
@@ -23,12 +23,9 @@ def home_page():
 
 @app.route('/licenses', methods=['GET', 'POST'])
 def view_licenses():
-    query = None
-    all_licenses = []
+    query = ''
     if request.method == 'POST':
-        query = request.args.get('search', '')
-        print(f"Search Query: {query}..")
-
+        query = request.form.get('search', '')
         if query:
             search_query = {'title': {'$regex': query, '$options': 'i'}}
             all_licenses = list(licenses.find(search_query))
@@ -45,6 +42,12 @@ def view_licenses():
 def delete_license(id):
     licenses.delete_one({"_id": ObjectId(id)})
     return redirect(url_for('view_licenses'))
+
+
+@app.route('/licenses/<license_id>', methods=['GET'])
+def license_view(license_id):
+    license_info = licenses.find_one({"_id": ObjectId(license_id)})
+    return render_template('license_view.html', license_info=license_info)
 
 
 @app.post("/export")
@@ -79,6 +82,37 @@ def export_licenses():
     return send_file("export.csv", as_attachment=True)
 
 
+"""
+@app.route('/licenses/export', methods=['GET'])
+def export_csv():
+    all_licenses = list(licenses.find())
+
+    # Create an in-memory buffer
+    output = io.StringIO()
+
+    if all_licenses:
+        fieldnames = all_licenses[0].keys()
+        csv_data = csv.DictWriter(output, fieldnames=fieldnames)
+        csv_data.writeheader()
+
+        for license in all_licenses:
+            license['_id'] = str(license['_id'])
+            csv_data.writerow(license)
+        unique_id = str(all_licenses[0]['_id'])
+    else:
+        unique_id = "no_data"
+
+    # Move the buffer to the beginning
+    output.seek(0)
+
+    # Create a Flask response object and stream the CSV data
+    response = Response(output, mimetype='text/csv')
+    response.headers.set('Content-Disposition', f'attachment; filename=licenses_{unique_id}.csv')
+
+    return response
+"""
+
+
 @app.route('/tracker', methods=['GET', 'POST'])
 def add_tracker():
     if request.method == 'POST':
@@ -103,12 +137,25 @@ def delete_tracker(id):
     return redirect(url_for('add_tracker'))
 
 
+# Route to handle the favicon.ico request
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
+
+
 @app.route('/<tracker_id>', methods=['GET'])
 def linked_licenses(tracker_id):
-    all_licenses = licenses.find({"tracker_ref_id": ObjectId(tracker_id)})
-    licenses_list = list(all_licenses)
-    tracker_info = trackers.find_one({"_id": ObjectId(tracker_id)})
-    return render_template('tracker_licenses.html', tracker_info=tracker_info, licenses_list=licenses_list)
+    try:
+        all_licenses = licenses.find({"tracker_ref_id": ObjectId(tracker_id)})
+        licenses_list = list(all_licenses)
+        tracker_info = trackers.find_one({"_id": ObjectId(tracker_id)})
+        return render_template('tracker_licenses.html', tracker_info=tracker_info, licenses_list=licenses_list)
+    except bson.errors.InvalidId:
+        return "Invalid tracker ID", 400
 
 
 if __name__ == '__main__':

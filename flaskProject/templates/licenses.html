@@ -4,16 +4,16 @@
 
 {% block body %}
 <div class="container-fluid">
+    <form action="/licenses" method="POST" class="col-6">
+        <div class="input-group pt-5">
+            <input type="text" class="form-control form-control-lg" name="search" placeholder="Enter title"
+                   value="{{ query }}">
+            <button class="btn btn-success" type="submit">Search</button>
+        </div>
+    </form>
+
+    <h1 class="mt-5">{% if query %} Results for "{{ query }}" {% else %}All licenses{% endif %}</h1>
     <div class="table-responsive">
-
-        <form action="/licenses" method="POST">
-            <input type="text" name="search" placeholder="Enter title" value="{{request.args.get('search', '') }}">
-            <button type="submit">Search</button>
-        </form>
-
-        <h1 class="mt-5">{% if query %} Results for "{{ query }}" {% else %}All licenses{% endif %}</h1>
-
-
         <table class="table table-hover table-striped table-bordered">
             <thead class="table-secondary">
             <tr>
@@ -24,6 +24,7 @@
                 <th class="col">Filetype</th>
                 <th class="col">Checksum</th>
                 <th class="col">Tags</th>
+                <th class="col">Object View</th>
                 <th class="col">Delete</th>
             </tr>
             </thead>
@@ -41,13 +42,14 @@
                     {{ tag }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </td>
+                <td><a href="/licenses/{{license._id}}">View changes</a></td>
                 <td>
-                    <form action="{{ url_for('delete_license', id=license['_id']) }}" method="POST">
-                        <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('Are you sure to delete? ')">
-                            Delete License
-                        </button>
-                    </form>
+                <form action="{{ url_for('delete_license', id=license['_id']) }}" method="POST">
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Are you sure to delete? ')">
+                        Delete License
+                    </button>
+                </form>
                 </td>
             </tr>
             {% endfor %}
@@ -60,7 +62,7 @@
         </div>
         <div class="d-grid col-6 mt-1 mb-5">
             <form action="{{ url_for('export_licenses')}}" method="POST">
-                <button type="submit" class="btn btn-danger">
+                <button type="submit" class="btn btn-primary">
                     Export to CSV
                 </button>
             </form>
