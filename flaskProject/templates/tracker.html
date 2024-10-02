@@ -47,18 +47,9 @@
                 <tr>
                     <td>{{ tracker.title }}</td>
                     <td><a href="{{ tracker.url }}">{{ tracker.url }}</a></td>
-                    <td id="t-freq">{{ tracker.frequency }}</td>
-                    <td id="t-lcheck">{{ tracker.last_checked }}</td>
-                    <td id="t-addon">{{ tracker.added_on }}</td>
-                    <script>
-                        window.onload = loadme;
-                        
-                        function loadme() { 
-                            document.getElementById("t-freq").innerHTML = Number(document.getElementById("t-freq").innerHTML) / 1000  
-                            document.getElementById("t-lcheck").innerHTML = new Date(Number(document.getElementById("t-lcheck").innerHTML)).toLocaleString("en-AU", { timeZone: 'Australia/Sydney' })  
-                            document.getElementById("t-addon").innerHTML = new Date(Number(document.getElementById("t-addon").innerHTML)).toLocaleString("en-AU", { timeZone: 'Australia/Sydney' })  
-                        }
-                    </script>
+                    <td class="t-freq">{{ tracker.frequency }}</td>
+                    <td class="t-lcheck">{{ tracker.last_checked }}</td>
+                    <td class="t-addon">{{ tracker.added_on }}</td>
                     <td>
                         {% for tag in tracker.tags %}
                             {{ tag }}{% if not loop.last %}, {% endif %}
@@ -83,5 +74,25 @@
             <a href="/" class="text-dark btn btn-info btn-lg">Back to Home</a>
         </div>
     </div>
+    <script>
+        window.onload = loadme;
+    
+        function loadme() { 
+            // Update frequency
+            document.querySelectorAll('.t-freq').forEach(function(element) {
+                element.innerHTML = Number(element.innerHTML) / 1000;
+            });
+    
+            // Update last checked date
+            document.querySelectorAll('.t-lcheck').forEach(function(element) {
+                element.innerHTML = new Date(Number(element.innerHTML)).toLocaleString("en-AU", { timeZone: 'Australia/Sydney' });
+            });
+    
+            // Update added on date
+            document.querySelectorAll('.t-addon').forEach(function(element) {
+                element.innerHTML = new Date(Number(element.innerHTML)).toLocaleString("en-AU", { timeZone: 'Australia/Sydney' });
+            });
+        }
+    </script>
 
 {% endblock %}
