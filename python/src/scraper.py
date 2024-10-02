@@ -1,4 +1,5 @@
 from selenium import webdriver
+import selenium
 import os
 import errno
 from selenium.webdriver.chrome.options import Options
@@ -24,22 +25,25 @@ class scrape_obj:
         return content
 
     def _fetch_html(self, url: str) -> bytes:
-        chrome_options = Options()
-        chrome_options.add_argument("--headless=new") # for Chrome >= 109
-        chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-        working_dir = os.getcwd()
+        try:
+            chrome_options = Options()
+            chrome_options.add_argument("--headless=new") # for Chrome >= 109
+            chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+            working_dir = os.getcwd()
 
-#        chrome_options.add_experimental_option('prefs', {
-#        "download.default_directory": (working_dir + "/files"), #Change default directory for downloads
-#        "download.prompt_for_download": False, #To auto download the file
-#        "download.directory_upgrade": True,
-#        "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
-#        })
-        self.driver = webdriver.Chrome(options=chrome_options)
-        self.driver.implicitly_wait(10)
-        self.driver.get(url)
-        content = self.driver.page_source.encode("utf-8")
-        self.driver.quit()
+    #        chrome_options.add_experimental_option('prefs', {
+    #        "download.default_directory": (working_dir + "/files"), #Change default directory for downloads
+    #        "download.prompt_for_download": False, #To auto download the file
+    #        "download.directory_upgrade": True,
+    #        "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
+    #        })
+            self.driver = webdriver.Chrome(options=chrome_options)
+            self.driver.implicitly_wait(10)
+            self.driver.get(url)
+            content = self.driver.page_source.encode("utf-8")
+            self.driver.quit()
+        except selenium.common.exceptions.InvalidArgumentException:
+            return None
         return content
     # returns a tuple with the filename[0] and content[1], and filetype[2]
     def save_to_file(self, url: str, filename: str) -> Tuple[str, str]:

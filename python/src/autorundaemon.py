@@ -37,6 +37,12 @@ def update_tracker():
             # Fetch current content
             scrape_handle.get_bytes(url)
             new_bytes = scrape_handle.bytes
+            if (new_bytes == None):
+                tracker_collection.update_one(
+                    {'_id': ref_id},
+                    {'$set': {'last_checked': now_millis}}
+                )
+                return
             new_checksum = compare_handle.checksum_bytes(new_bytes)
             
             # Fetch old content from the database
@@ -65,7 +71,7 @@ def update_tracker():
                         "file_ref_uuid": generated_filename,
                         "content_checksum": new_checksum,
                         "tracker_ref_id": ref_id,
-                        "changes": compare_handle.compare_strings(new_bytes.decode(), old_license.get('content').decode()) if old_license else None
+                        "changes": compare_handle.compare_strings(new_content, old_license.get('content').decode()) if old_license else None
                     }
                 )
                 
