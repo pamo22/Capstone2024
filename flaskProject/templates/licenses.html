@@ -32,7 +32,7 @@
             {% for license in licenses %}
             <tr>
                 <td>{{ license.title }}</td>
-                <td>{{ license.created_date }}</td>
+                <td class="t-addon">{{ license.created_date }}</td>
                 <td><a href="{{ license.url }}">{{ license.url }}</a></td>
                 <td>{{ license.filepath }}</td>
                 <td>{{ license.filetype }}</td>
@@ -44,12 +44,12 @@
                 </td>
                 <td><a href="/licenses/{{license._id}}">View changes</a></td>
                 <td>
-                <form action="{{ url_for('delete_license', id=license['_id']) }}" method="POST">
-                    <button type="submit" class="btn btn-danger"
-                            onclick="return confirm('Are you sure to delete? ')">
-                        Delete License
-                    </button>
-                </form>
+                    <form action="{{ url_for('delete_license', id=license['_id']) }}" method="POST">
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you sure to delete? ')">
+                            Delete License
+                        </button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
@@ -69,5 +69,17 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    window.onload = loadme;
+
+    function loadme() {
+        // Update added on date
+        document.querySelectorAll('.t-addon').forEach(function (element) {
+            element.innerHTML = new Date(Number(element.innerHTML)).toLocaleString("en-AU", {timeZone: 'Australia/Sydney'});
+        });
+    }
+</script>
 {% endblock %}
 
