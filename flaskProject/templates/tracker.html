@@ -3,96 +3,96 @@
 {% block head %}{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1>Add Tracker</h1>
+<div class="container">
+    <h1>Add Tracker</h1>
 
-        <form action="/tracker" method="POST">
-            <div class="mb-3">
-                <label for="web_url" class="form-label">URL to scrape:</label>
-                <input type="text" class="form-control" name="web_url" id="web_url" placeholder="Input the URL"
-                       required>
-            </div>
-            <div class="mb-3">
-                <label for="title" class="form-label">Title of the file:</label>
-                <input type="text" class="form-control" name="title" id="title" placeholder="Input the Title" required>
-            </div>
-            <div class="mb-3">
-                <label for="frequency" class="form-label">Frequency (in milliseconds):</label>
-                <input type="number" class="form-control" name="frequency" id="frequency" placeholder="Input the Title"
-                       required>
-            </div>
-            <div class="mb-3">
-                <label for="tags" class="form-label">Tags (comma-separated):</label>
-                <input type="text" class="form-control" name="tags" id="tags" placeholder="Input the Title" required>
-            </div>
-            <input type="submit" class="btn btn-primary mb-5 col-12" value="Add Tracker">
-        </form>
-
-        <h1 class="mt-5">All Trackers</h1>
-        <table class="table table-hover table-striped table-bordered">
-            <thead class="table-secondary">
-            <tr>
-                <th class="col">Title</th>
-                <th class="col">URL</th>
-                <th class="col">Frequency (Seconds)</th>
-                <th class="col">Last Checked</th>
-                <th class="col">Added_on</th>
-                <th class="col">Tags</th>
-                <th class="col">Licenses</th>
-                <th class="col">Delete</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for tracker in trackers %}
-                <tr>
-                    <td>{{ tracker.title }}</td>
-                    <td><a href="{{ tracker.url }}">{{ tracker.url }}</a></td>
-                    <td class="t-freq">{{ tracker.frequency }}</td>
-                    <td class="t-lcheck">{{ tracker.last_checked }}</td>
-                    <td class="t-addon">{{ tracker.added_on }}</td>
-                    <td>
-                        {% for tag in tracker.tags %}
-                            {{ tag }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                    </td>
-                    <td><a href="/{{tracker._id}}">View licenses</a></td>
-                    <td>
-                        <form action="{{ url_for('delete_tracker', id=tracker['_id']) }}" method="POST">
-                            <button type="submit" class="btn btn-danger"
-                                    onclick="return confirm('Are you sure to delete? ')">Delete Tracker
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-
-            {% endfor %}
-            </tbody>
-        </table>
-
-
-        <div class="d-grid col-6 mt-5 mb-5">
-            <a href="/" class="text-dark btn btn-info btn-lg">Back to Home</a>
+    <form action="/tracker" method="POST">
+        <div class="mb-3">
+            <label for="web_url" class="form-label">URL to scrape:</label>
+            <input type="text" class="form-control" name="web_url" id="web_url" placeholder="Input the URL"
+                   pattern="https?://.+" title="Please enter a valid URL starting with http or https" required>
         </div>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title of the file:</label>
+            <input type="text" class="form-control" name="title" id="title" placeholder="Input the Title" required>
+        </div>
+        <div class="mb-3">
+            <label for="frequency" class="form-label">Frequency (in milliseconds):</label>
+            <input type="number" class="form-control" name="frequency" id="frequency" placeholder="Input the Title"
+                   required>
+        </div>
+        <div class="mb-3">
+            <label for="tags" class="form-label">Tags (comma-separated):</label>
+            <input type="text" class="form-control" name="tags" id="tags" placeholder="Input the Title" required>
+        </div>
+        <input type="submit" class="btn btn-primary mb-5 col-12" value="Add Tracker">
+    </form>
+
+    <h1 class="mt-5">All Trackers</h1>
+    <table class="table table-hover table-striped table-bordered">
+        <thead class="table-secondary">
+        <tr>
+            <th class="col">Title</th>
+            <th class="col">URL</th>
+            <th class="col">Frequency (Seconds)</th>
+            <th class="col">Last Checked</th>
+            <th class="col">Added_on</th>
+            <th class="col">Tags</th>
+            <th class="col">Licenses</th>
+            <th class="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tracker in trackers %}
+        <tr>
+            <td>{{ tracker.title }}</td>
+            <td><a href="{{ tracker.url }}">{{ tracker.url }}</a></td>
+            <td class="t-freq">{{ tracker.frequency }}</td>
+            <td class="t-lcheck">{{ tracker.last_checked }}</td>
+            <td class="t-addon">{{ tracker.added_on }}</td>
+            <td>
+                {% for tag in tracker.tags %}
+                {{ tag }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td><a href="/{{tracker._id}}">View licenses</a></td>
+            <td>
+                <form action="{{ url_for('delete_tracker', id=tracker['_id']) }}" method="POST">
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Are you sure to delete? ')">Delete Tracker
+                    </button>
+                </form>
+            </td>
+        </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <div class="d-grid col-6 mt-5 mb-5">
+        <a href="/" class="text-dark btn btn-info btn-lg">Back to Home</a>
     </div>
-    <script>
-        window.onload = loadme;
-    
-        function loadme() { 
-            // Update frequency
-            document.querySelectorAll('.t-freq').forEach(function(element) {
-                element.innerHTML = Number(element.innerHTML) / 1000;
-            });
-    
-            // Update last checked date
-            document.querySelectorAll('.t-lcheck').forEach(function(element) {
-                element.innerHTML = new Date(Number(element.innerHTML)).toLocaleString("en-AU", { timeZone: 'Australia/Sydney' });
-            });
-    
-            // Update added on date
-            document.querySelectorAll('.t-addon').forEach(function(element) {
-                element.innerHTML = new Date(Number(element.innerHTML)).toLocaleString("en-AU", { timeZone: 'Australia/Sydney' });
-            });
-        }
-    </script>
+</div>
+<script>
+    window.onload = loadme;
+
+    function loadme() {
+        // Update frequency
+        document.querySelectorAll('.t-freq').forEach(function (element) {
+            element.innerHTML = Number(element.innerHTML) / 1000;
+        });
+
+        // Update last checked date
+        document.querySelectorAll('.t-lcheck').forEach(function (element) {
+            element.innerHTML = new Date(Number(element.innerHTML)).toLocaleString("en-AU", {timeZone: 'Australia/Sydney'});
+        });
+
+        // Update added on date
+        document.querySelectorAll('.t-addon').forEach(function (element) {
+            element.innerHTML = new Date(Number(element.innerHTML)).toLocaleString("en-AU", {timeZone: 'Australia/Sydney'});
+        });
+    }
+</script>
 
 {% endblock %}

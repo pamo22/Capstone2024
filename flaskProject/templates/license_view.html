@@ -11,7 +11,13 @@
             <button class="btn btn-lg btn-outline-secondary me-2">View</button>
             <button class="btn btn-lg btn-outline-secondary">Edit</button>
         </div>
-        <button class="btn btn-lg btn-outline-danger">Delete</button>
+
+        <form action="{{ url_for('delete_license', id=license_info['_id']) }}" method="POST">
+                        <button type="submit" class="btn btn-lg btn-outline-danger"
+                                onclick="return confirm('Are you sure to delete? ')">
+                            Delete
+                        </button>
+                    </form>
     </div>
     <div class="mt-4 p-2 bg-light">
         <h2>Name of the license: {{license_info.title| upper}}</h2>
@@ -20,7 +26,7 @@
     <div class="card mt-3">
         <div class="card-header d-flex justify-content-between">
             <span>License Text/Comparison</span>
-            <span>Created Date: <strong>{{license_info.created_date}}</strong></span>
+            <span>Created Date: <strong class="t-addon">{{license_info.created_date}}</strong></span>
         </div>
         <div class="card-body" style="height: 300px; overflow-y: scroll;">
             <p>Changes : {{ license_info.changes }}</p>
@@ -33,5 +39,16 @@
     </div>
 
 </div>
+
+<script>
+    window.onload = loadme;
+
+    function loadme() {
+        // Update added on date
+        document.querySelectorAll('.t-addon').forEach(function (element) {
+            element.innerHTML = new Date(Number(element.innerHTML)).toLocaleString("en-AU", {timeZone: 'Australia/Sydney'});
+        });
+    }
+</script>
 {% endblock %}
 
