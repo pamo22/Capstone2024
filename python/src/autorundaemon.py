@@ -23,14 +23,17 @@ def update_tracker():
     
     # Fetch all items from the tracker collection
     items = tracker_collection.find()
+    
 
     for item in items:
+        #print (item)
         last_checked = int(item.get('last_checked', 0))
         frequency = int(item.get('frequency', 0))
         url = item.get('url', '')
         ref_id = item.get('_id')
 
         # Check if it's time to check this item
+        #print (item['title'] + ": " + str(now_millis - last_checked))
         if now_millis - last_checked >= frequency:
             print(f"Checking item: {item['title']}")
 
@@ -42,7 +45,7 @@ def update_tracker():
                     {'_id': ref_id},
                     {'$set': {'last_checked': now_millis}}
                 )
-                return
+                continue
             new_checksum = compare_handle.checksum_bytes(new_bytes)
             
             # Fetch old content from the database
@@ -71,7 +74,7 @@ def update_tracker():
                         "file_ref_uuid": generated_filename,
                         "content_checksum": new_checksum,
                         "tracker_ref_id": ref_id,
-                        "changes": compare_handle.compare_strings(new_content, old_license.get('content').decode()) if old_license else None
+                        "changes": compare_handle.compare_strings(new_content, old_license.get('content')) if old_license else None
                     }
                 )
                 
