@@ -115,19 +115,18 @@ def export_csv():
 
 @app.route('/tracker', methods=['GET', 'POST'])
 def add_tracker():
+    all_trackers = trackers.find()
     if request.method == 'POST':
         url = request.form['web_url']
         title = request.form['title']
         frequency = int(request.form['frequency'])
-        tags = request.form['tags'].split(',')  # Tags as comma-separated values
+        tags = request.form['tags'].split(',')
         added_on = int(time.time() * 1000)
         last_checked = int(time.time() * 1000)
         trackers.insert_one(
             {'title': title, 'url': url, 'frequency': frequency, 'last_checked': last_checked, 'added_on': added_on,
              'tags': tags})
-
-        return render_template('tracker.html')
-    all_trackers = trackers.find()
+        return render_template('tracker.html', trackers=all_trackers)
     return render_template('tracker.html', trackers=all_trackers)
 
 
