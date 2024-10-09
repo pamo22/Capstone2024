@@ -66,7 +66,7 @@ def export_licenses():
         "changes"
     ]
 
-    with open("export.csv", mode='w', newline='') as file:
+    with open("export.csv", mode='w', newline='', encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=fields)
 
         # Write the header
@@ -82,35 +82,37 @@ def export_licenses():
     return send_file("export.csv", as_attachment=True)
 
 
-"""
 @app.route('/licenses/export', methods=['GET'])
 def export_csv():
     all_licenses = list(licenses.find())
+
+    csv_file_path = os.path.join(os.getcwd(), 'licenses.csv')
 
     # Create an in-memory buffer
     output = io.StringIO()
 
     if all_licenses:
-        fieldnames = all_licenses[0].keys()
+        fieldnames = [key for key in all_licenses[0].keys() if key != 'content']
         csv_data = csv.DictWriter(output, fieldnames=fieldnames)
         csv_data.writeheader()
 
         for license in all_licenses:
+            if 'content' in license:
+                del license['content']
             license['_id'] = str(license['_id'])
             csv_data.writerow(license)
         unique_id = str(all_licenses[0]['_id'])
+
+        with open(csv_file_path, mode='w', newline='', encoding='utf-8') as file:
+            file.write(output.getvalue())
+
     else:
-        unique_id = "no_data"
+        unique_id = "No license Found"
 
     # Move the buffer to the beginning
     output.seek(0)
-
-    # Create a Flask response object and stream the CSV data
-    response = Response(output, mimetype='text/csv')
-    response.headers.set('Content-Disposition', f'attachment; filename=licenses_{unique_id}.csv')
-
-    return response
-"""
+    return Response(output, mimetype="text/csv",
+                    headers={"Content-Disposition": f"attachment;filename=licenses_{unique_id}.csv"})
 
 
 @app.route('/tracker', methods=['GET', 'POST'])
