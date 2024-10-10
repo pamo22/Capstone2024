@@ -28,11 +28,11 @@ def view_licenses():
         query = request.form.get('search', '')
         if query:
             search_query = {'title': {'$regex': query, '$options': 'i'}}
-            all_licenses = list(licenses.find(search_query))
+            all_licenses = list(licenses.find(search_query).sort('_id', -1))
         else:
-            all_licenses = list(licenses.find())
+            all_licenses = list(licenses.find().sort('_id', -1))
     else:
-        all_licenses = list(licenses.find())
+        all_licenses = list(licenses.find().sort('_id', -1))
     all_licenses = [dict(item, _id=str(item['_id'])) for item in all_licenses]
 
     return render_template('licenses.html', licenses=all_licenses, query=query)
@@ -127,7 +127,7 @@ def add_tracker():
         last_checked = int(time.time() * 1000)
         trackers.insert_one(
             {'title': title, 'url': url, 'frequency': frequency, 'last_checked': last_checked, 'added_on': added_on,
-             'tags': tags})
+             'scraped': False, 'tags': tags})
         return render_template('tracker.html', trackers=all_trackers)
     return render_template('tracker.html', trackers=all_trackers)
 
