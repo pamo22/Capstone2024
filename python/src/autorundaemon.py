@@ -4,15 +4,22 @@ from datetime import datetime
 import time
 from scraper import scrape_obj
 from comparison_v2 import compare_obj
+import os
+from pymongo import MongoClient
 import uuid
+import sys
+
 
 # Initialize database connection and objects
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 try:
     mongo_uri = os.getenv("MONGO_URI", "mongodb://mytester2:databased1204@mongodb:27017/testdb")
     db_client = MongoClient(mongo_uri)
 except pymongo.errors.ConnectionError as e:
-    print(f"Database connection failed: {e}")
+    eprint(f"Database connection failed: {e}")
     exit(1)
 db = db_client["testdb"]
 scrape_handle = scrape_obj()
@@ -38,7 +45,7 @@ def update_tracker():
 
     new_tracker_count = tracker_collection.count_documents({'scraped': False})
     if new_tracker_count == 0:
-        print("No new trackers found.")
+        eprint("No new trackers found.")
         return
 
     not_scraped_items = tracker_collection.find({'scraped': False})
@@ -48,7 +55,7 @@ def update_tracker():
         url = item.get('url', '')
         ref_id = item.get('_id')
 
-        print(f"Scraping item: {item['title']}")
+        eprint(f"Scraping item: {item['title']}")
         # Fetch current content
         scrape_handle.get_bytes(url)
         new_bytes = scrape_handle.bytes
@@ -57,11 +64,11 @@ def update_tracker():
             #    {'_id': ref_id},
             #    {'$set': {'last_checked': now_millis}}
             # )
-            print(f"Failed to scrape {item['title']}")
+            eprint(f"Failed to scrape {item['title']}")
             continue
         new_checksum = compare_handle.checksum_bytes(new_bytes)
 
-        print(f"{item['title']}. Adding to licenses collection...")
+        eprint(f"{item['title']}. Adding to licenses collection...")
         generated_filename = str(uuid.uuid4())
         scrape_handle.process_text()
         new_content = scrape_handle.content
@@ -102,12 +109,12 @@ def update_tracker():
         urll = itemm.get('url', '')
         ref_idd = itemm.get('_id')
         # Check if it's time to check this item
-        # print (item['title'] + ": " + str(now_millis - last_checked))
+        # eprint (item['title'] + ": " + str(now_millis - last_checked))
         if last_checkedd is None or now_millis - last_checkedd >= frequency:
-            print(f"Checking item: {itemm['title']}")
+            eprint(f"Checking item: {itemm['title']}")
 
             if new_checksum != old_checksum:
-                print(f"Content has changed for {itemm['title']}. Updating database...")
+                eprint(f"Content has changed for {itemm['title']}. Updating database...")
                 # Save new license info to the database
                 generated_filename = str(uuid.uuid4())
                 scrape_handle.process_text()
@@ -136,13 +143,13 @@ def update_tracker():
                 {'$set': {'last_checked': now_millis}}
             )
         else:
-            print(f"No changes detected for {itemm['title']}.")
+            eprint(f"No changes detected for {itemm['title']}.")
             tracker_collection.update_one(
                 {'_id': ref_idd},
                 {'$set': {'last_checked': now_millis}}
             )
 
-    print("Tracker update complete: ", datetime.fromtimestamp(_now_millis() / 1000.0))
+    eprint("Tracker update complete: ", datetime.fromtimestamp(_now_millis() / 1000.0))
 
 
 # To run the update function periodically, you might use a loop or a scheduler
