@@ -122,7 +122,7 @@ def add_tracker():
     if request.method == 'POST':
         url = request.form['web_url']
         title = request.form['title']
-        frequency = int(request.form['frequency'])
+        frequency = int(86400000)
         tags = request.form['tags'].split(',')
         added_on = int(time.time() * 1000)
         last_checked = int(time.time() * 1000)
