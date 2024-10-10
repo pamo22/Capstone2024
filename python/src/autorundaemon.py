@@ -9,7 +9,8 @@ import uuid
 # Initialize database connection and objects
 
 try:
-    db_client = pymongo.MongoClient("mongodb://mytester2:databased1204@localhost:27017")
+    mongo_uri = os.getenv("MONGO_URI", "mongodb://mytester2:databased1204@mongodb:27017/testdb")
+    db_client = MongoClient(mongo_uri)
 except pymongo.errors.ConnectionError as e:
     print(f"Database connection failed: {e}")
     exit(1)

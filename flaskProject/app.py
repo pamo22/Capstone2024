@@ -10,7 +10,8 @@ app = Flask(__name__)
 app.config['FILE_DIRECTORY'] = "static/files/"
 app.config['ALLOWED_EXTENSIONS'] = ['.pdf', '.html']
 
-db_client = MongoClient("mongodb://mytester2:databased1204@localhost:27017")
+mongo_uri = os.getenv("MONGO_URI", "mongodb://mytester2:databased1204@mongodb:27017/testdb")
+db_client = MongoClient(mongo_uri)
 db = db_client["testdb"]
 licenses = db.licenses
 trackers = db.tracker
