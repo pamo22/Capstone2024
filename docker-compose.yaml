@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mytester2
+      MONGO_INITDB_ROOT_PASSWORD: databased1204
+    volumes:
+      - mongo_data:/data/db
+
+  flask_server:
+    build:
+      context: ./flaskProject
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mytester2:databased1204@mongodb:27017
+
+  web_scraper:
+    build:
+      context: ./python/src
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mytester2:databased1204@mongodb:27017
+    volumes:
+      - ./python/src:/app
+    entrypoint: ["python", "/app/autorundaemon.py"]
+
+volumes:
+  mongo_data:
