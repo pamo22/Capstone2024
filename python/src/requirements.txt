@@ -1,0 +1,6 @@
+selenium
+undetected-chromedriver
+setuptools
+pymongo
+bs4
+pdfplumber
