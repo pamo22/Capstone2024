@@ -43,7 +43,7 @@ def update_tracker():
         # Check if it's time to check this item
         #print (item['title'] + ": " + str(now_millis - last_checked))
         if now_millis - last_checked >= frequency:
-            print(f"Checking item: {item['title']}")
+            eprint(f"Checking item: {item['title']}")
 
             # Fetch current content
             scrape_handle.get_bytes(url)
@@ -64,7 +64,7 @@ def update_tracker():
             old_checksum = old_license.get('content_checksum') if old_license else None
             
             if new_checksum != old_checksum:
-                print(f"Content has changed for {item['title']}. Updating database...")
+                eprint(f"Content has changed for {item['title']}. Updating database...")
                 # Save new license info to the database
                 generated_filename = str(uuid.uuid4())
                 scrape_handle.process_text()
@@ -93,13 +93,13 @@ def update_tracker():
                     {'$set': {'last_checked': now_millis}}
                 )
             else:
-                print(f"No changes detected for {item['title']}.")
+                eprint(f"No changes detected for {item['title']}.")
                 tracker_collection.update_one(
                     {'_id': ref_id},
                     {'$set': {'last_checked': now_millis}}
                 )
     
-    print("Tracker update complete: ",datetime.fromtimestamp(_now_millis()/1000.0))
+    eprint("Tracker update complete: ",datetime.fromtimestamp(_now_millis()/1000.0))
 
 # To run the update function periodically, you might use a loop or a scheduler
 if __name__ == "__main__":

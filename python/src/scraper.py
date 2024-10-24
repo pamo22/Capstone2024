@@ -8,6 +8,11 @@ import os
 import urllib.request
 from typing import Tuple
 from document_processor import doc_processor_obj
+import sys
+
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 class scrape_obj:
@@ -45,7 +50,7 @@ class scrape_obj:
             content = self.driver.page_source.encode("utf-8")
             self.driver.quit()
         except (selenium.common.exceptions.InvalidArgumentException, selenium.common.exceptions.WebDriverException):
-            print('\033[93m' + "WARNING: '" + url + "' is either invalid, or the remote server has changed!" + '\033[0m')
+            eprint('\033[93m' + "WARNING: '" + url + "' is either invalid, or the remote server has changed!" + '\033[0m')
             return None
         return content
     # returns a tuple with the filename[0] and content[1], and filetype[2]
